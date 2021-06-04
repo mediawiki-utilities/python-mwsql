@@ -27,8 +27,6 @@ setup(
     author=about["__author__"],
     author_email=about["__email__"],
     classifiers=[
-        "Development Status :: 5 - Production/Stable",
-        "Intended Audience :: Developers",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
