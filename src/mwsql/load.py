@@ -9,7 +9,7 @@ from mwsql import Dump
 from urllib.error import HTTPError
 
 
-def progress_bar(current, total):
+def progress_bar(current, total, width=60):
     '''Custom progress bar for wget downloads'''
 
     unit = 'bytes'
@@ -55,29 +55,15 @@ def load(db, filename):
     source, download = get_source(db, filename)
 
     if download:
-        # Check if the file already exists in the cwd
-        cwd = os.getcwd()
-        file_ = source.split('/')[-1]
-        path = os.path.join(cwd, file_)
-        if os.path.isfile(path):
-            prompt = input(f'The file {file_} already exists. Download again? [y/n] ')
+        try:
+            print(f'Downloading {source}')
+            cwd = os.getcwd()
+            file = wget.download(source, bar=progress_bar)
+            file_path = os.path.join(cwd, file)
 
-            if prompt in 'yY':
-                print(f'Downloading {source}')
-                try:
-                    file = wget.download(source, bar=progress_bar)
-                    file_path = os.path.join(cwd, file)
-
-                except HTTPError:
-                    print('File not found')
-                    return None
-
-            elif prompt in 'nN':
-                file_path = path
-
-            else:
-                print('Invalid option. Exiting.')
-                return None
+        except HTTPError:
+            print('File not found')
+            return None
 
     else:
         file_path = source
