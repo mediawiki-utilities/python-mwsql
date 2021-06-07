@@ -16,9 +16,9 @@ def progress_bar(current, total):
 
     # Show file size in MB for large files
     if total >= 100000:
-        MB = 1024*1024
-        current = current/MB
-        total = total/MB
+        MB = 1024 * 1024
+        current = current / MB
+        total = total / MB
         unit = 'MB'
 
     progress = current / total
