@@ -9,7 +9,7 @@ for how it works by exploring the notebook ``code_playground.ipynb``
 
 You can find more information in the `documentation`_.
 
-You can install ``mwsql`` with:
+You can (not yet) install ``mwsql`` with:
 
 .. code-block:: console
 
