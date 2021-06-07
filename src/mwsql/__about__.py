@@ -2,6 +2,8 @@
 # See the LICENSE file in the root of this repository
 # for complete details.
 
+'''Package metadata used by setup.py'''
+
 
 __all__ = [
     '__title__',
