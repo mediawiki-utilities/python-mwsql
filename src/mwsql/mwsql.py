@@ -1,6 +1,6 @@
 '''A set of utilities for processing MediaWiki SQL dump data'''
 
-__version__ = '0.1.0'
+__version__ = '0.1.0.dev0'
 
 import os
 import gzip
