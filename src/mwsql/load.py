@@ -33,6 +33,7 @@ def get_source(db, filename):
     '''
 
     # If in PAWS, set dir
+    # NOTE: I think this covers Toolforge too thankfully!
     if os.path.exists('/public/dumps/public/'):
         prefix = '/public/dumps/public/'
         download = False
@@ -42,6 +43,7 @@ def get_source(db, filename):
         prefix = 'https://dumps.wikimedia.org/'
         download = True
 
+    # TODO: probably more robust to use os.path.join() here for all the pieces
     source = f'{prefix}{db}/latest/{db}-latest-{filename}.sql.gz'
     return source, download
 
@@ -72,6 +74,7 @@ def load(db, filename):
         dump = Dump.from_file(file_path)
         return dump
 
+    # TODO: eventually will want to make the error catching more explicit. clearer code and otherwise keyboard interrupts won't actually stop the program
     except:
         print("Couldn't create dump")
         return None
