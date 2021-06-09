@@ -55,6 +55,9 @@ def get_col_name(line: str) -> str:
     col_name_pattern = r'`([\S]*)`'
     col_name = re.search(col_name_pattern, line).group(1)
 
+    # I was going to suggest trying to map SQL dtypes to numpy or native dtypes in Python
+    # but then I feel like most libraries like Pandas auto-detect and do this for you
+    # so probably not necessary.
     col_dtype_pattern = r'` ((.)*),'
     col_dtype = re.search(col_dtype_pattern, line).group(1)
 
@@ -99,6 +102,8 @@ def get_records(line: str) -> List[str]:
     # Remove `;` at the end of the last `insert into` statement
     if values[-1] == ';':
         values = values[:-1]
+    # Maybe it's too much of an edge case to worry about, but technically if "),(" appeared in a data tuple -- e.g., as part of a page title --
+    # it would be split falsely. I wonder if there is some lightweight way to enforce the # of expected columns and intelligently recombine broken tuples?
     records = re.split(r'\),\(', values[1:-1])  # Strip `(` and `)`
 
     return parse_records(records)

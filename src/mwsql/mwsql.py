@@ -27,6 +27,8 @@ class Dump:
     def rows(self):
         '''Create a generator object from the rows'''
 
+        # Is this the encoding used by the dumps? I would have assumed UTF-8 but I've honestly never verified.
+        # Regardless, you'll likely want to abstract the encoding into a property because it's used in multiple places and could be subject to change
         with gzip.open(self._source_file, 'rt', encoding='ISO-8859-1') as infile:
             for line in infile:
                 if utils.is_insert_statement(line):
@@ -46,6 +48,9 @@ class Dump:
 
         with gzip.open(file_path, 'rt', encoding='ISO-8859-1') as infile:
             for line in infile:
+                # small style thing: because we expect the is_insert_statement to not trigger till all the other clauses have,
+                # it'd be best to move it to the end so that's clearer. In general, I'd put these clauses in order of
+                # when they should appear in the file
                 if utils.is_insert_statement(line):
                     # All metadata is extracted so we return it
                     return cls(table_name, col_names, col_dtypes, primary_key, source_file)
@@ -71,4 +76,5 @@ class Dump:
 
         rows = self.rows
         print(self.col_names)
+        # NOTE: I think this will trigger an undesired StopIteration exception if n_lines is greater than the # of data rows.
         return [next(rows) for _ in range(n_lines)]
