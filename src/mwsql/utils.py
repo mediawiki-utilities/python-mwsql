@@ -1,4 +1,4 @@
-'''Helper functions used in src/mwsql.py'''
+'''Helper functions used in src/dump.py'''
 
 import csv
 import gzip
