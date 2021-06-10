@@ -12,7 +12,7 @@ csv.field_size_limit(sys.maxsize)
 
 
 def head(file_path, n_lines=10):
-    '''Display top of compressed file, similar to `zcat | head` UNIX utility'''
+    '''Display top of compressed file, similar to `zcat | head` in GNU'''
 
     with gzip.open(file_path, 'rt', encoding='utf-8') as infile:
         for line in infile:
