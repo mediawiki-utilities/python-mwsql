@@ -1,12 +1,12 @@
 '''Utilities for easy loading of dump files from
 PAWS or from the web'''
 
-import os
 import sys
 import wget
 
-from mwsql import Dump
+from pathlib import Path
 from urllib.error import HTTPError
+from mwsql import Dump
 
 
 def progress_bar(current, total, width=60):
@@ -27,54 +27,28 @@ def progress_bar(current, total, width=60):
     sys.stdout.flush()
 
 
-def get_source(db, filename):
-    '''Determine where to get the dump files from depending
-    on if the user's environment is PAWS or local.
-    '''
-
-    # If in PAWS, set dir
-    # NOTE: I think this covers Toolforge too thankfully!
-    if os.path.exists('/public/dumps/public/'):
-        prefix = '/public/dumps/public/'
-        download = False
-
-    # If in other environment, set url
-    else:
-        prefix = 'https://dumps.wikimedia.org/'
-        download = True
-
-    # TODO: probably more robust to use os.path.join() here for all the pieces
-    source = f'{prefix}{db}/latest/{db}-latest-{filename}.sql.gz'
-    return source, download
-
-
 def load(db, filename):
     '''Load dump file from public dir if in PAWS, else download
-    from the web if the file doesn't already exist in the user's
-    current working directory
+    from the web. Returns a Dump object.
     '''
 
-    source, download = get_source(db, filename)
+    PAWS_ROOT_DIR = Path('/public/dumps/public/')
+    DUMPS_URL = 'https://dumps.wikimedia.org/'
+    subdir = Path(db, 'latest')
+    extended_filename = f'{db}-latest-{filename}.sql.gz'
+    file_path = Path(extended_filename)
 
-    if download:
+    if PAWS_ROOT_DIR.exists():
+        dump_file = Path(PAWS_ROOT_DIR, subdir, file_path)
+
+    else:
+        subdir, file_path = str(subdir), str(file_path)
+        url = f'{DUMPS_URL}{subdir}/{file_path}'
         try:
-            print(f'Downloading {source}')
-            cwd = os.getcwd()
-            file = wget.download(source, bar=progress_bar)
-            file_path = os.path.join(cwd, file)
-
+            print(f'Downloading {url}')
+            dump_file = wget.download(url, bar=progress_bar)
         except HTTPError:
             print('File not found')
             return None
 
-    else:
-        file_path = source
-
-    try:
-        dump = Dump.from_file(file_path)
-        return dump
-
-    # TODO: eventually will want to make the error catching more explicit. clearer code and otherwise keyboard interrupts won't actually stop the program
-    except:
-        print("Couldn't create dump")
-        return None
+    return Dump.from_file(dump_file)
