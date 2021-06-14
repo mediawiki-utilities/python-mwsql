@@ -1,14 +1,11 @@
 '''Helper functions used in src/dump.py'''
 
-import csv
 import gzip
 import re
 import sys
 
-from typing import List
 
-# Allow long field names
-csv.field_size_limit(sys.maxsize)
+from typing import List
 
 
 def head(file_path, n_lines=10):
@@ -79,31 +76,57 @@ def get_primary_key(line: str) -> str:
     return primary_key
 
 
-def parse_records(records: List[str]):
-    '''Parse an SQL `insert into` statement into separate records
-    (also called values, rows, entries...) and return as a csv.reader object.
+def parse_sql_stmt(line: str) -> List[List[str]]:
+    '''Parse an SQL INSERT INTO statement into a list
+    of lists representing the rows in the table.
     '''
 
-    reader = csv.reader(records, delimiter=',',
-                                 doublequote=False,
-                                 escapechar='\\',
-                                 quotechar="'",
-                                 strict=True
-                        )
-    return reader
+    out = []
+    tup = []
+    field = []
 
+    in_tuple = False
+    in_quote = False
 
-def get_records(line: str) -> List[str]:
-    '''Split a string containing multiple SQL value tuples into a list
-    where each element is a csv reader object representing the tuple.
-    '''
+    for i in range(1, len(line) -1):
+        prev = line[i-1]
+        curr = line[i]
 
-    values = line.partition(' VALUES ')[-1].strip().replace('NULL', "''")
-    # Remove `;` at the end of the last `insert into` statement
-    if values[-1] == ';':
-        values = values[:-1]
-    # Maybe it's too much of an edge case to worry about, but technically if "),(" appeared in a data tuple -- e.g., as part of a page title --
-    # it would be split falsely. I wonder if there is some lightweight way to enforce the # of expected columns and intelligently recombine broken tuples?
-    records = re.split(r'\),\(', values[1:-1])  # Strip `(` and `)`
+        if in_tuple and curr not in "()',":
+            field.append(curr)
 
-    return parse_records(records)
+        elif curr == '(':
+            if not in_quote:
+                in_tuple = True
+            elif in_quote:
+                field.append(curr)
+
+        elif curr == ')':
+            if not in_quote:
+                in_tuple = False
+            else:
+                field.append(curr)
+
+        elif curr == "'":
+            if not in_quote:
+                in_quote = True
+            elif in_quote:
+                if prev != '/':
+                    in_quote = False
+
+        elif curr == ',':
+            if not in_quote and not in_tuple:
+                tup.append(''.join(field))
+                out.append(tup)
+                field = []
+                tup = []
+            elif in_quote:
+                field.append(curr)
+            elif in_tuple and not in_quote:
+                tup.append(''.join(field))
+                field = []
+
+    tup.append(''.join(field))
+    out.append(tup)
+    return out
+
