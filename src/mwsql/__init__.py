@@ -2,9 +2,8 @@
 # See the LICENSE file in the root of this repository
 # for complete details.
 
-'''Package metadata used by setup.py'''
 
-from mwsql.__about__ import (
+from about import (
     __author__,
     __copyright__,
     __email__,
@@ -15,8 +14,10 @@ from mwsql.__about__ import (
     __version__,
 )
 
+from dump import Dump
 
 __all__ = [
+    Dump,
     "__title__",
     "__summary__",
     "__url__",
