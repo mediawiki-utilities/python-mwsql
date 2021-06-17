@@ -1,9 +1,15 @@
+'''Utility functions used to download, open and display
+ the contents of SQL dump files. Works with both .gz and
+ uncompressed files.
+'''
+
 import gzip
 import sys
 import wget
 
 from pathlib import Path
 from urllib.error import HTTPError
+
 
 def open_file(file_path, mode, encoding=None):
     '''Open file and return a file handle. Works with both
@@ -55,7 +61,8 @@ def progress_bar(current, total, width=60):
         unit = 'MB'
 
     progress = current / total
-    progress_message = f"Progress: {progress:.0%} [{current:.1f} / {total:.1f}] {unit}"
+    progress_message = (f"Progress: \
+    {progress:.0%} [{current:.1f} / {total:.1f}] {unit}")
     sys.stdout.write('\r' + progress_message)
     sys.stdout.flush()
 

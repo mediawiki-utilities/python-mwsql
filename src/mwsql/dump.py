@@ -2,79 +2,144 @@
 
 __version__ = '0.1.0.dev0'
 
-import os
-import gzip
+import csv
+import sys
 
-from mwsql import utils
+from pathlib import Path
+
+from utils import open_file
+from parser import has_sql_attribute, get_sql_attribute
+from parser import map_dtypes, convert, parse
+
+# Allow long field names
+csv.field_size_limit(sys.maxsize)
 
 
 class Dump:
     '''Class for parsing an SQL dump file and processing its contents'''
 
-    def __init__(self, table_name, col_names, col_dtypes, primary_key, source_file):
+    def __init__(self, database, table_name, col_names, col_dtypes,
+                 primary_key, source_file, encoding
+                 ):
 
+        self.db = database
         self.name = table_name
         self.col_names = col_names
-        self.dtypes = col_dtypes
+        self.sql_dtypes = col_dtypes
         self.primary_key = primary_key
-        self.size = os.path.getsize(source_file)
+        self.size = Path(source_file).stat().st_size
+        self._dtypes = None
         self._source_file = source_file
+        self._encoding = encoding
+
+    def __str__(self):
+        return f'Dump(database={self.db}, name={self.name}, size={self.size})'
+
+    def __repr__(self):
+        return str(self)
 
     def __iter__(self):
-        return self.rows
+        return self.rows()
 
     @property
-    def rows(self):
+    def encoding(self):
+        '''Get the encoding used to read the dump file'''
+
+        return self._encoding
+
+    @encoding.setter
+    def encoding(self, new_encoding):
+        '''Set the encoding used to read the dump file'''
+
+        self._encoding = new_encoding
+
+    @property
+    def dtypes(self):
+        '''Get a mapping between col_names and native Python dtypes'''
+
+        if self._dtypes is None:
+            self._dtypes = map_dtypes(self.sql_dtypes)
+        return self._dtypes
+
+    def rows(self, convert_dtypes=False, strict=False, **kwargs):
         '''Create a generator object from the rows'''
 
-        # Is this the encoding used by the dumps? I would have assumed UTF-8 but I've honestly never verified.
-        # Regardless, you'll likely want to abstract the encoding into a property because it's used in multiple places and could be subject to change
-        with gzip.open(self._source_file, 'rt', encoding='ISO-8859-1') as infile:
-            for line in infile:
-                if utils.is_insert_statement(line):
-                    rows = utils.parse_sql_stmt(line)
-                    for row in rows:
+        if str(self._source_file).endswith('.gz'):
+            infile = open_file(self._source_file, 'rt', encoding=self.encoding)
+        else:
+            infile = open_file(self._source_file, 'r', encoding=self.encoding)
+
+        if convert_dtypes:
+            dtypes = list(self.dtypes.values())
+
+        for line in infile:
+            if has_sql_attribute(line, 'insert'):
+                rows = parse(line, **kwargs)
+                for row in rows:
+                    if convert_dtypes:
+                        converted_row = convert(row, dtypes, strict=strict)
+                        yield converted_row
+                    else:
                         yield row
 
     @classmethod
-    def from_file(cls, file_path):
-        '''Initialize mwsql object from dump file'''
+    def from_file(cls, file_path, encoding='utf-8'):
+        '''Initialize Dump object from dump file'''
 
         source_file = file_path
+        database = None
         table_name = None
         primary_key = None
         col_names = []
         col_dtypes = {}
 
-        with gzip.open(file_path, 'rt', encoding='ISO-8859-1') as infile:
-            for line in infile:
-                # small style thing: because we expect the is_insert_statement to not trigger till all the other clauses have,
-                # it'd be best to move it to the end so that's clearer. In general, I'd put these clauses in order of
-                # when they should appear in the file
-                if utils.is_insert_statement(line):
-                    # All metadata is extracted so we return it
-                    return cls(table_name, col_names, col_dtypes, primary_key, source_file)
-                if utils.is_create_statement(line):
-                    table_name = utils.get_table_name(line)
-                elif utils.has_col_name(line):
-                    col_name, dtype = utils.get_col_name(line)
-                    col_names.append(col_name)
-                    col_dtypes[col_name] = dtype
-                elif utils.has_primary_key(line):
-                    primary_key = utils.get_primary_key(line)
-        return None
+        if str(file_path).endswith('.gz'):
+            infile = open_file(file_path, 'rt', encoding=encoding)
+        else:
+            infile = open_file(file_path, 'r', encoding=encoding)
 
-    def to_csv(self, file_path):
-        '''Convert mwsql object into CSV file'''
-        # creates the specified outfile if it doesn't exist
-        # raises an error if the outfile already exist to avoid overwriting
+        # Extract meta data from dump file
+        for line in infile:
+            if has_sql_attribute(line, 'database'):
+                database = get_sql_attribute(line, 'database')
 
-        raise NotImplementedError
+            elif has_sql_attribute(line, 'create'):
+                table_name = get_sql_attribute(line, 'table_name')
+
+            elif has_sql_attribute(line, 'col_name'):
+                col_name = get_sql_attribute(line, 'col_name')
+                dtype = get_sql_attribute(line, 'dtype')
+                col_names.append(col_name)
+                col_dtypes[col_name] = dtype
+
+            elif has_sql_attribute(line, 'primary_key'):
+                primary_key = get_sql_attribute(line, 'primary_key')
+
+            elif has_sql_attribute(line, 'insert'):
+                break
+
+        return cls(database, table_name, col_names, col_dtypes,
+                   primary_key, source_file, encoding
+                   )
+
+    def to_csv(self, file_path, **kwargs):
+        '''Write Dump object to CSV file'''
+
+        with open(file_path, 'w') as outfile:
+            writer = csv.writer(outfile, **kwargs)
+            writer.writerow(self.col_names)
+            for row in self:
+                writer.writerow(row)
 
     def head(self, n_lines=5):
         '''Display first n rows'''
 
-        rows = self.rows
+        rows = self.rows()
         print(self.col_names)
-        # NOTE: I think this will trigger an undesired StopIteration exception if n_lines is greater than the # of data rows.
-        return [next(rows) for _ in range(n_lines)]
+
+        for _ in range(n_lines):
+            try:
+                print(next(rows))
+            except StopIteration:
+                return
+        return
