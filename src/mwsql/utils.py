@@ -10,7 +10,7 @@ import wget
 from pathlib import Path
 from urllib.error import HTTPError
 
-
+# TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
 def open_file(file_path, mode, encoding=None):
     '''Open file and return a file handle. Works with both
     gzipped and uncompressed files.
@@ -47,7 +47,7 @@ def head(file_path, n_lines=10, encoding='utf-8'):
             return
     return
 
-
+# Minor but I would just get rid of the width parameter if you aren't going to use it
 def progress_bar(current, total, width=60):
     '''Custom progress bar for wget downloads'''
 
@@ -72,6 +72,7 @@ def load(db, filename):
     from the web. Returns a file object.
     '''
 
+    # style: generally I only use ALL_CAPS variables when it's global so I would just change these to normal_var_names
     PAWS_ROOT_DIR = Path('/public/dumps/public/')
     DUMPS_URL = 'https://dumps.wikimedia.org/'
     subdir = Path(db, 'latest')
