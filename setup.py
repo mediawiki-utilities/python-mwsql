@@ -3,15 +3,15 @@ import os
 from setuptools import setup, find_packages
 
 BASE_DIR = os.path.dirname(__file__)
-SRC_DIR = os.path.join(base_dir, 'src')
+SRC_DIR = os.path.join(BASE_DIR, 'src')
 
 
 # Fetch package metadata
 about = {}
-with open(os.path.join(SRC_DIR, "mwsql", "__about__.py")) as fh:
+with open(os.path.join(SRC_DIR, "mwsql", "about.py")) as fh:
     exec(fh.read(), about)
 
-with open(os.path.join(base_dir, "README.md")) as fh:
+with open(os.path.join(BASE_DIR, "README.md")) as fh:
     long_description = fh.read()
 
 

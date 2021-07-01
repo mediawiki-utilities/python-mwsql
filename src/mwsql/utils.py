@@ -1,109 +1,111 @@
-'''Helper functions used in src/mwsql.py'''
+"""Utility functions used to download, open and display
+ the contents of SQL dump files. Works with both .gz and
+ uncompressed files.
+"""
 
-import csv
 import gzip
-import re
 import sys
+import wget  # type: ignore
 
-from typing import List
+from pathlib import Path
+from typing import Iterator, Optional, Union
+from urllib.error import HTTPError
 
-# Allow long field names
-csv.field_size_limit(sys.maxsize)
+# Custom type
+PathObject = Union[str, Path]
 
 
-def head(file_path, n_lines=10):
-    '''Display top of compressed file, similar to `zcat | head` UNIX utility'''
+# TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
+# Done!
+def open_file(
+    file_path: PathObject, mode: str, encoding: Optional[str] = None
+) -> Iterator[str]:
+    """Open file and return a file handle. Works with both
+    .gz and uncompressed files.
+    """
 
-    with gzip.open(file_path, 'rt', encoding='utf-8') as infile:
-        for line in infile:
+    # if "b" in mode and encoding is not None:
+    #     raise ValueError("Argument 'encoding' not supported in binary mode")
+
+    if str(file_path).endswith(".gz"):
+        with gzip.open(file_path, mode, encoding=encoding) as file_handle:
+            yield from file_handle
+    else:
+        with open(file_path, mode, encoding=encoding) as file_handle:
+            yield from file_handle
+
+
+def head(
+    file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8"
+) -> None:
+    """Display first n lines of a file. Works with both
+    .gz and uncompressed files. Defaults to 10 lines.
+    """
+
+    if str(file_path).endswith(".gz"):
+        infile = open_file(file_path, "rt", encoding=encoding)
+    else:
+        infile = open_file(file_path, "r", encoding=encoding)
+
+    for line in infile:
+        if n_lines == 0:
+            break
+        try:
             print(line.strip())
             n_lines -= 1
-            if n_lines == 0:
-                break
+        except StopIteration:
+            return
+    return
 
 
-# mwsql helper functions
-def is_insert_statement(line: str) -> bool:
-    '''Check whether a string is an SQL `insert into` statement.'''
+# Minor but I would just get rid of the width parameter if you aren't going to use it
+# I tried but wget wouldn't work without it. Haven't actually looked into it,
+# but what I *think* happens is that while the progress_bar func itself doesn't use the width param, it gets passed as a kwarg to wget where it's necessary.
+def progress_bar(
+    current: Union[int, float], total: Union[int, float], width: int = 60
+) -> None:
+    """Custom progress bar for wget downloads"""
 
-    return line.startswith('INSERT INTO')
+    unit = "bytes"
 
+    # Show file size in MB for large files
+    if total >= 100000:
+        MB = 1024 * 1024
+        current = current / MB
+        total = total / MB
+        unit = "MB"
 
-def is_create_statement(line: str) -> bool:
-    '''Check whether a string is an SQL `create table` statement.'''
-
-    return line.startswith('CREATE TABLE')
-
-
-def get_table_name(line: str) -> str:
-    '''Extract SQL table name from string'''
-
-    table_name_pattern = r'`([\S]*)`'
-    table_name = re.search(table_name_pattern, line).group(1)
-    return table_name
-
-
-def has_col_name(line: str) -> bool:
-    '''Check whether a string contains an SQL column name'''
-
-    return line.strip().startswith('`')
+    progress = current / total
+    progress_message = f"Progress: \
+    {progress:.0%} [{current:.1f} / {total:.1f}] {unit}"
+    sys.stdout.write("\r" + progress_message)
+    sys.stdout.flush()
 
 
-def get_col_name(line: str) -> str:
-    '''Extract SQL column names and data types from string'''
+def load(database: str, filename: str) -> Optional[PathObject]:
+    """Load dump file from public dir if in PAWS, else download
+    from the web. Returns a file object.
+    """
 
-    col_name_pattern = r'`([\S]*)`'
-    col_name = re.search(col_name_pattern, line).group(1)
+    # style: generally I only use ALL_CAPS variables when it's global so I would just change these to normal_var_names
+    # Oh, cool! I though all caps were for constants in general but TIL
+    # they're specifically for module level constants
+    paws_root_dir = Path("/public/dumps/public/")
+    dumps_url = "https://dumps.wikimedia.org/"
+    subdir = Path(database, "latest")
+    extended_filename = f"{database}-latest-{filename}.sql.gz"
+    file_path = Path(extended_filename)
 
-    # I was going to suggest trying to map SQL dtypes to numpy or native dtypes in Python
-    # but then I feel like most libraries like Pandas auto-detect and do this for you
-    # so probably not necessary.
-    col_dtype_pattern = r'` ((.)*),'
-    col_dtype = re.search(col_dtype_pattern, line).group(1)
+    if paws_root_dir.exists():
+        dump_file = Path(paws_root_dir, subdir, file_path)
 
-    return col_name, col_dtype
+    else:
+        url = f"{dumps_url}{str(subdir)}/{str(file_path)}"
+        try:
+            print(f"Downloading {url}")
+            dump_file = wget.download(url, bar=progress_bar)
+        except HTTPError:
+            print("File not found")
+            return None
 
-
-def has_primary_key(line: str) -> str:
-    '''Check whether a string contains an SQL primary key'''
-
-    return line.strip().startswith('PRIMARY KEY')
-
-
-def get_primary_key(line: str) -> str:
-    '''Extract SQL table primary key from string'''
-
-    pattern = r'`([\S]*)`'
-    primary_key = re.search(pattern, line).group(1).replace('`', '').split(',')
-
-    return primary_key
-
-
-def parse_records(records: List[str]):
-    '''Parse an SQL `insert into` statement into separate records
-    (also called values, rows, entries...) and return as a csv.reader object.
-    '''
-
-    reader = csv.reader(records, delimiter=',',
-                                 doublequote=False,
-                                 escapechar='\\',
-                                 quotechar="'",
-                                 strict=True
-                        )
-    return reader
-
-
-def get_records(line: str) -> List[str]:
-    '''Split a string containing multiple SQL value tuples into a list
-    where each element is a csv reader object representing the tuple.
-    '''
-
-    values = line.partition(' VALUES ')[-1].strip().replace('NULL', "''")
-    # Remove `;` at the end of the last `insert into` statement
-    if values[-1] == ';':
-        values = values[:-1]
-    # Maybe it's too much of an edge case to worry about, but technically if "),(" appeared in a data tuple -- e.g., as part of a page title --
-    # it would be split falsely. I wonder if there is some lightweight way to enforce the # of expected columns and intelligently recombine broken tuples?
-    records = re.split(r'\),\(', values[1:-1])  # Strip `(` and `)`
-
-    return parse_records(records)
+    return Path(dump_file)
