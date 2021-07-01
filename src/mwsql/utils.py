@@ -11,10 +11,7 @@ from pathlib import Path
 from typing import Iterator, Optional, Union
 from urllib.error import HTTPError
 
-# Custom types
-# TextFileGenerator = Iterator[str]
-# BinaryFileGenerator = Iterator[bytes]
-# FileGenerator = Union[TextFileGenerator, BinaryFileGenerator]
+# Custom type
 PathObject = Union[str, Path]
 
 

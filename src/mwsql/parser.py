@@ -114,7 +114,7 @@ def convert(
             converted.append(conv)
 
         except ValueError as e:
-            if values[i] == "NULL":
+            if values[i] == "":
                 # why not convert to None?
                 converted.append(val)
             elif not strict:
@@ -122,6 +122,7 @@ def convert(
                 converted.append(val)
             else:
                 # my PyCharm installation doesn't like this and things it won't work FYI. I haven't tested it though.
+                # You're right - I've changed this now.
                 print(f"ValueError: {e}")
 
     if warn:
@@ -138,13 +139,20 @@ def split_tuples(line: str) -> List[str]:
 
     # I think the NULL replacement might need some tweaking. The challenge is two-fold:
     # * making NULL into something that doesn't break the parser -- that's easy, either add quotes like you do or replace with None
+    # > I have opted for replacing NULL with the empty string when it's used
+    # to denote missing values (i.e. not part of some other string). The reason
+    # is that `None` is somewhat specific to pure Python while Pandas, Numpy, R, CSV, and others recognize the empty string as a missing value and sub it with their own null equivalent (NaN, NA, <na>, ...)
     # * not making this replacement when e.g., NULL is just part of a real value like a page title as happens in Commons sometimes
     # For the latter, I think you might need to a regex that only does the replacement when it sees any of the following
     # which in theory should capture all the ways that NULL shows up as a full field value:
     # * ,NULL,
     # * (NULL,
     # * ,NULL)
-    values = line.partition(" VALUES ")[-1].strip().replace("NULL", "'NULL'")
+    # > Good suggestion - I have implemented this regex.
+    tuples = line.partition(" VALUES ")[-1].strip()
+    # Sub NULL with empty string
+    pattern = r"(?<=[,(])NULL(?=[,)])"
+    values = re.sub(pattern, "", tuples)
     # Remove `;` at the end of the last `insert into` statement
     if values[-1] == ";":
         values = values[:-1]
