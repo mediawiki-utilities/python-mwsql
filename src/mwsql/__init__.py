@@ -2,8 +2,9 @@
 # See the LICENSE file in the root of this repository
 # for complete details.
 
+# type: ignore
 
-from about import (
+from .about import (
     __author__,
     __copyright__,
     __email__,
@@ -14,7 +15,7 @@ from about import (
     __version__,
 )
 
-from dump import Dump
+from .dump import Dump
 
 __all__ = [
     Dump,

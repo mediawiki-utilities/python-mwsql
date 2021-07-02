@@ -16,7 +16,7 @@ repos:
     hooks:
       - id: mypy
         exclude: ^tests/
-        args: [--disallow-untyped-defs, --disallow-untyped-calls, --check-untyped-defs, --ignore-missing-imports]
+        args: [--disallow-untyped-defs, --disallow-untyped-calls, --check-untyped-defs]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v4.0.1

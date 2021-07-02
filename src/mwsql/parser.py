@@ -1,4 +1,4 @@
-"""Helper functions used in src/dump.py"""
+"""Parser functions used in src/dump.py"""
 
 import re
 import csv

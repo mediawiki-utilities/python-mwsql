@@ -7,8 +7,9 @@ import gzip
 import sys
 import wget  # type: ignore
 
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, Optional, Union
+from typing import Iterator, Optional, TextIO, Union
 from urllib.error import HTTPError
 
 # Custom type
@@ -17,22 +18,20 @@ PathObject = Union[str, Path]
 
 # TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
 # Done!
+@contextmanager
 def open_file(
-    file_path: PathObject, mode: str, encoding: Optional[str] = None
-) -> Iterator[str]:
+    file_path: PathObject, encoding: Optional[str] = None
+) -> Iterator[TextIO]:
     """Open file and return a file handle. Works with both
     .gz and uncompressed files.
     """
 
-    # if "b" in mode and encoding is not None:
-    #     raise ValueError("Argument 'encoding' not supported in binary mode")
-
     if str(file_path).endswith(".gz"):
-        with gzip.open(file_path, mode, encoding=encoding) as file_handle:
-            yield from file_handle
+        with gzip.open(file_path, mode="rt", encoding=encoding) as infile:
+            yield infile
     else:
-        with open(file_path, mode, encoding=encoding) as file_handle:
-            yield from file_handle
+        with open(file_path, mode="r", encoding=encoding) as infile:
+            yield infile
 
 
 def head(
@@ -42,19 +41,15 @@ def head(
     .gz and uncompressed files. Defaults to 10 lines.
     """
 
-    if str(file_path).endswith(".gz"):
-        infile = open_file(file_path, "rt", encoding=encoding)
-    else:
-        infile = open_file(file_path, "r", encoding=encoding)
-
-    for line in infile:
-        if n_lines == 0:
-            break
-        try:
-            print(line.strip())
-            n_lines -= 1
-        except StopIteration:
-            return
+    with open_file(file_path, encoding=encoding) as infile:
+        for line in infile:
+            if n_lines == 0:
+                break
+            try:
+                print(line.strip())
+                n_lines -= 1
+            except StopIteration:
+                return
     return
 
 
