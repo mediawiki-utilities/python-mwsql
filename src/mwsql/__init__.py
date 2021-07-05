@@ -14,11 +14,13 @@ from .about import (
     __url__,
     __version__,
 )
-
 from .dump import Dump
+from .utils import head, load
 
 __all__ = [
-    Dump,
+    "head",
+    "load",
+    "Dump",
     "__title__",
     "__summary__",
     "__url__",
