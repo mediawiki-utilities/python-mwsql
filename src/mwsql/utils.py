@@ -5,12 +5,12 @@
 
 import gzip
 import sys
-import wget  # type: ignore
-
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, Optional, TextIO, Union
 from urllib.error import HTTPError
+
+import wget  # type: ignore
 
 # Custom type
 PathObject = Union[str, Path]
@@ -34,9 +34,7 @@ def open_file(
             yield infile
 
 
-def head(
-    file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8"
-) -> None:
+def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> None:
     """Display first n lines of a file. Works with both
     .gz and uncompressed files. Defaults to 10 lines.
     """
