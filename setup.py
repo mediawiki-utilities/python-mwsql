@@ -7,12 +7,12 @@ BASE_DIR = os.path.abspath(os.path.dirname(__file__))
 SRC_DIR = os.path.join(BASE_DIR, "src")
 
 
-# Fetch package metadata
+# Get package metadata
 about = {}
 with open(os.path.join(SRC_DIR, "mwsql", "about.py")) as fh:
     exec(fh.read(), about)
 
-# Fetch long description from README
+# Get long description from README
 with open(os.path.join(BASE_DIR, "README.rst")) as fh:
     long_description = fh.read()
 
@@ -41,7 +41,7 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=["wget" >= 3.2],
+    install_requires=["wget >= 3.2"],
     include_package_data=True,
     zip_safe=False,
 )
