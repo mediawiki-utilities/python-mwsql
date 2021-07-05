@@ -41,7 +41,7 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=[],
+    install_requires=["wget" >= 3.2],
     include_package_data=True,
     zip_safe=False,
 )
