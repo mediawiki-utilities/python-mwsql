@@ -1,1 +1,16 @@
-include LICENSE
+include LICENSE *.rst *.toml *.yml *.yaml *.ini
+graft src
+graft .github
+
+# Tests
+include tox.ini
+recursive-include tests *.py
+recursive-include tests *.yml
+
+# Documentation
+include docs/Makefile docs/docutils.conf
+recursive-include docs *.png
+recursive-include docs *.svg
+recursive-include docs *.py
+recursive-include docs *.rst
+prune docs/_build
