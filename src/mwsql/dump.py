@@ -2,19 +2,17 @@
 
 import csv
 import sys
-
 from pathlib import Path
-from typing import Any, Dict, List, Iterator, Optional, TypeVar, Type, Union
+from typing import Any, Dict, Iterator, List, Optional, Type, TypeVar, Union
 
-from .utils import open_file
 from .parser import (
-    has_sql_attribute,
-    get_sql_attribute,
-    map_dtypes,
     convert,
+    get_sql_attribute,
+    has_sql_attribute,
+    map_dtypes,
     parse,
 )
-
+from .utils import open_file
 
 # Allow long field names
 csv.field_size_limit(sys.maxsize)
@@ -78,9 +76,7 @@ class Dump:
         return self._dtypes
 
     @classmethod
-    def from_file(
-        cls: Type[T], file_path: PathObject, encoding: str = "utf-8"
-    ) -> T:
+    def from_file(cls: Type[T], file_path: PathObject, encoding: str = "utf-8") -> T:
         """Initialize Dump object from dump file"""
 
         source_file = file_path
@@ -149,10 +145,10 @@ class Dump:
             for row in self:
                 writer.writerow(row)
 
-    def head(self, n_lines: int = 10) -> None:
+    def head(self, n_lines: int = 10, convert_dtypes: bool = False) -> None:
         """Display first n rows"""
 
-        rows = self.rows()
+        rows = self.rows(convert_dtypes=convert_dtypes)
         print(self.col_names)
 
         for _ in range(n_lines):
