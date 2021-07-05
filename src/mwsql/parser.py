@@ -1,10 +1,9 @@
 """Parser functions used in src/dump.py"""
 
-import re
 import csv
+import re
 import warnings
-
-from typing import Any, Dict, List, Iterator, Optional
+from typing import Any, Dict, Iterator, List, Optional
 
 
 def has_sql_attribute(line: str, element_type: str) -> bool:
@@ -75,18 +74,14 @@ def map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
     for key, val in sql_dtypes.items():
         if "int" in val:
             types[key] = int
-        elif any(
-            dtype in val for dtype in ("float", "double", "decimal", "numeric")
-        ):
+        elif any(dtype in val for dtype in ("float", "double", "decimal", "numeric")):
             types[key] = float
         else:
             types[key] = str
     return types
 
 
-def convert(
-    values: List[str], dtypes: List[type], strict: bool = False
-) -> List[Any]:
+def convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
     """Convert strings in list to native Python dtypes.
     With strict set to False, if any of the items in the
     list cannot be converted, it's returned unchanged,
