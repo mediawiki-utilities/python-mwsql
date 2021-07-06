@@ -1,6 +1,5 @@
 """Utility functions used to download, open and display
- the contents of SQL dump files. Works with both .gz and
- uncompressed files.
+ the contents of Wikimedia SQL dump files.
 """
 
 import gzip
@@ -22,21 +21,36 @@ PathObject = Union[str, Path]
 def open_file(
     file_path: PathObject, encoding: Optional[str] = None
 ) -> Iterator[TextIO]:
-    """Open file and return a file handle. Works with both
-    .gz and uncompressed files.
+    """Custom context manager for opening both .gz and uncompressed files.
+
+    :param file_path: The path to the file
+    :type file_path: PathObject
+    :param encoding: text encoding, defaults to None
+    :type encoding: Optional[str], optional
+    :yield: file handle
+    :rtype: Iterator[TextIO]
     """
 
     if str(file_path).endswith(".gz"):
-        with gzip.open(file_path, mode="rt", encoding=encoding) as infile:
-            yield infile
+        infile = gzip.open(file_path, mode="rt", encoding=encoding)
     else:
-        with open(file_path, mode="r", encoding=encoding) as infile:
-            yield infile
+        infile = open(file_path, mode="r", encoding=encoding)
+    try:
+        yield infile
+    finally:
+        infile.close()
 
 
 def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> None:
     """Display first n lines of a file. Works with both
     .gz and uncompressed files. Defaults to 10 lines.
+
+    :param file_path: The path to the file
+    :type file_path: PathObject
+    :param n_lines: lines to display, defaults to 10
+    :type n_lines: int, optional
+    :param encoding: text encoding, defaults to "utf-8"
+    :type encoding: str, optional
     """
 
     with open_file(file_path, encoding=encoding) as infile:
@@ -57,7 +71,15 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
 def progress_bar(
     current: Union[int, float], total: Union[int, float], width: int = 60
 ) -> None:
-    """Custom progress bar for wget downloads"""
+    """Custom progress bar for wget downloads.
+
+    :param current: bytes downloaded so far
+    :type current: Union[int, float]
+    :param total: total size of download in bytes or megabytes
+    :type total: Union[int, float]
+    :param width: progress bar width in chars, defaults to 60
+    :type width: int, optional
+    """
 
     unit = "bytes"
 
@@ -75,9 +97,22 @@ def progress_bar(
     sys.stdout.flush()
 
 
-def load(database: str, filename: str) -> Optional[PathObject]:
-    """Load dump file from public dir if in PAWS, else download
-    from the web. Returns a file object.
+def load(database: str, filename: str, date: str = "latest") -> Optional[PathObject]:
+    """Load a dump file from a Wikimedia public directory if the
+    user is in a supported environment (PAWS, Toolforge...). Otherwise, download dump file from the web and save in the current working directory. In both cases,the function returns a path-like object which can be used to access the file. Does not check if the file already exists on the path.
+
+    :param database: the database backup dump to download a file from,
+        e.g. 'enwiki' (English Wikipedia). See a list of available
+        databases here: https://dumps.wikimedia.org/backup-index-bydb.html
+    :type database: str
+    :param filename: the name of the file to download, e.g. 'page' loads the
+        file {database}-{date}-page.sql.gz
+    :type filename: str
+    :param date: date the dump was generated, defaults to "latest". If "latest"
+        is not used, the date format should be "YYYYMMDD"
+    :type date: str, optional
+    :return: path to dump file
+    :rtype: Optional[PathObject]
     """
 
     # style: generally I only use ALL_CAPS variables when it's global so I would just change these to normal_var_names
@@ -85,8 +120,8 @@ def load(database: str, filename: str) -> Optional[PathObject]:
     # they're specifically for module level constants
     paws_root_dir = Path("/public/dumps/public/")
     dumps_url = "https://dumps.wikimedia.org/"
-    subdir = Path(database, "latest")
-    extended_filename = f"{database}-latest-{filename}.sql.gz"
+    subdir = Path(database, date)
+    extended_filename = f"{database}-{date}-{filename}.sql.gz"
     file_path = Path(extended_filename)
 
     if paws_root_dir.exists():
