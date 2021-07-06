@@ -25,9 +25,9 @@ def _open_file(
 
     :param file_path: The path to the file
     :type file_path: PathObject
-    :param encoding: text encoding, defaults to None
+    :param encoding: Text encoding, defaults to None
     :type encoding: Optional[str], optional
-    :yield: file handle
+    :yield: A file handle
     :rtype: Iterator[TextIO]
     """
 
@@ -47,9 +47,9 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
 
     :param file_path: The path to the file
     :type file_path: PathObject
-    :param n_lines: lines to display, defaults to 10
+    :param n_lines: Lines to display, defaults to 10
     :type n_lines: int, optional
-    :param encoding: text encoding, defaults to "utf-8"
+    :param encoding: Text encoding, defaults to "utf-8"
     :type encoding: str, optional
     """
 
@@ -75,9 +75,9 @@ def _progress_bar(
 
     :param current: bytes downloaded so far
     :type current: Union[int, float]
-    :param total: total size of download in bytes or megabytes
+    :param total: Total size of download in bytes or megabytes
     :type total: Union[int, float]
-    :param width: progress bar width in chars, defaults to 60
+    :param width: Progress bar width in chars, defaults to 60
     :type width: int, optional
     """
 
@@ -101,17 +101,17 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
     """Load a dump file from a Wikimedia public directory if the
     user is in a supported environment (PAWS, Toolforge...). Otherwise, download dump file from the web and save in the current working directory. In both cases,the function returns a path-like object which can be used to access the file. Does not check if the file already exists on the path.
 
-    :param database: the database backup dump to download a file from,
+    :param database: The database backup dump to download a file from,
         e.g. 'enwiki' (English Wikipedia). See a list of available
         databases here: https://dumps.wikimedia.org/backup-index-bydb.html
     :type database: str
-    :param filename: the name of the file to download, e.g. 'page' loads the
+    :param filename: The name of the file to download, e.g. 'page' loads the
         file {database}-{date}-page.sql.gz
     :type filename: str
-    :param date: date the dump was generated, defaults to "latest". If "latest"
+    :param date: Date the dump was generated, defaults to "latest". If "latest"
         is not used, the date format should be "YYYYMMDD"
     :type date: str, optional
-    :return: path to dump file
+    :return: Path to dump file
     :rtype: Optional[PathObject]
     """
 
