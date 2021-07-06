@@ -6,13 +6,13 @@ from pathlib import Path
 from typing import Any, Dict, Iterator, List, Optional, Type, TypeVar, Union
 
 from .parser import (
-    convert,
-    get_sql_attribute,
-    has_sql_attribute,
-    map_dtypes,
-    parse,
+    _convert,
+    _get_sql_attribute,
+    _has_sql_attribute,
+    _map_dtypes,
+    _parse,
 )
-from .utils import open_file
+from .utils import _open_file
 
 # Allow long field names
 csv.field_size_limit(sys.maxsize)
@@ -72,7 +72,7 @@ class Dump:
         """Get a mapping between col_names and native Python dtypes"""
 
         if self._dtypes is None:
-            self._dtypes = map_dtypes(self.sql_dtypes)
+            self._dtypes = _map_dtypes(self.sql_dtypes)
         return self._dtypes
 
     @classmethod
@@ -87,24 +87,24 @@ class Dump:
         col_dtypes = {}
 
         # Extract meta data from dump file
-        with open_file(file_path, encoding=encoding) as infile:
+        with _open_file(file_path, encoding=encoding) as infile:
             for line in infile:
-                if has_sql_attribute(line, "database"):
-                    database = get_sql_attribute(line, "database")
+                if _has_sql_attribute(line, "database"):
+                    database = _get_sql_attribute(line, "database")
 
-                elif has_sql_attribute(line, "create"):
-                    table_name = get_sql_attribute(line, "table_name")
+                elif _has_sql_attribute(line, "create"):
+                    table_name = _get_sql_attribute(line, "table_name")
 
-                elif has_sql_attribute(line, "col_name"):
-                    col_name = get_sql_attribute(line, "col_name")
-                    dtype = get_sql_attribute(line, "dtype")
+                elif _has_sql_attribute(line, "col_name"):
+                    col_name = _get_sql_attribute(line, "col_name")
+                    dtype = _get_sql_attribute(line, "dtype")
                     col_names.append(col_name)
                     col_dtypes[col_name] = dtype
 
-                elif has_sql_attribute(line, "primary_key"):
-                    primary_key = get_sql_attribute(line, "primary_key")
+                elif _has_sql_attribute(line, "primary_key"):
+                    primary_key = _get_sql_attribute(line, "primary_key")
 
-                elif has_sql_attribute(line, "insert"):
+                elif _has_sql_attribute(line, "insert"):
                     break
 
             return cls(
@@ -125,13 +125,13 @@ class Dump:
         if convert_dtypes:
             dtypes = list(self.dtypes.values())
 
-        with open_file(self._source_file, encoding=self.encoding) as infile:
+        with _open_file(self._source_file, encoding=self.encoding) as infile:
             for line in infile:
-                if has_sql_attribute(line, "insert"):
-                    rows = parse(line, **kwargs)
+                if _has_sql_attribute(line, "insert"):
+                    rows = _parse(line, **kwargs)
                     for row in rows:
                         if convert_dtypes:
-                            converted_row = convert(row, dtypes, strict=strict)
+                            converted_row = _convert(row, dtypes, strict=strict)
                             yield converted_row
                         else:
                             yield row

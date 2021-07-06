@@ -6,7 +6,7 @@ import warnings
 from typing import Any, Dict, Iterator, List, Optional
 
 
-def has_sql_attribute(line: str, element_type: str) -> bool:
+def _has_sql_attribute(line: str, element_type: str) -> bool:
     """Check whether a string contains an SQL element of the
     type specified by the argument element_type.
     """
@@ -30,7 +30,7 @@ def has_sql_attribute(line: str, element_type: str) -> bool:
     return contains_element
 
 
-def get_sql_attribute(line: str, attr_type: str) -> Optional[str]:
+def _get_sql_attribute(line: str, attr_type: str) -> Optional[str]:
     """Extract SQL db/table attribute specified by
     argument attr_type from dump file.
     """
@@ -63,11 +63,12 @@ def get_sql_attribute(line: str, attr_type: str) -> Optional[str]:
         return None
 
     # probably define attr as None before the try clause. right now if not of the if-else clauses matched, would throw a weird error
+    # Done!
     return attr
 
 
 # I don't know much about the intricacies of types but I like this -- good and simple!
-def map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
+def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
     """Create mapping from SQL dtypes to Python dtypes"""
 
     types: Dict[str, type] = {}
@@ -81,10 +82,10 @@ def map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
     return types
 
 
-def convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
+def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
     """Convert strings in list to native Python dtypes.
     With strict set to False, if any of the items in the
-    list cannot be converted, it's returned unchanged,
+    list cannot be converted, it is returned unchanged,
     i.e. as a str.
     """
 
@@ -122,12 +123,14 @@ def convert(values: List[str], dtypes: List[type], strict: bool = False) -> List
 
     if warn:
         # low priority: perhaps include the values too? or problematic value?
+        # I need to think about how to handle this because some files, notably
+        # externallinks, have > 10^3 such values
         warnings.warn("some rows could not be converted to Python dtypes")
 
     return converted
 
 
-def split_tuples(line: str) -> List[str]:
+def _split_tuples(line: str) -> List[str]:
     """Split a string containing multiple SQL rows represented as
     tuples into a list of strings each representing a row.
     """
@@ -156,7 +159,7 @@ def split_tuples(line: str) -> List[str]:
     return records
 
 
-def parse(
+def _parse(
     line: str,
     delimiter: str = ",",
     escape_char: str = "\\",
@@ -169,7 +172,7 @@ def parse(
     csv reader object (generator).
     """
 
-    records = split_tuples(line)
+    records = _split_tuples(line)
     reader = csv.reader(
         records,
         delimiter=delimiter,

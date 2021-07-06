@@ -18,7 +18,7 @@ PathObject = Union[str, Path]
 # TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
 # Done!
 @contextmanager
-def open_file(
+def _open_file(
     file_path: PathObject, encoding: Optional[str] = None
 ) -> Iterator[TextIO]:
     """Custom context manager for opening both .gz and uncompressed files.
@@ -53,7 +53,7 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
     :type encoding: str, optional
     """
 
-    with open_file(file_path, encoding=encoding) as infile:
+    with _open_file(file_path, encoding=encoding) as infile:
         for line in infile:
             if n_lines == 0:
                 break
@@ -68,7 +68,7 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
 # Minor but I would just get rid of the width parameter if you aren't going to use it
 # I tried but wget wouldn't work without it. Haven't actually looked into it,
 # but what I *think* happens is that while the progress_bar func itself doesn't use the width param, it gets passed as a kwarg to wget where it's necessary.
-def progress_bar(
+def _progress_bar(
     current: Union[int, float], total: Union[int, float], width: int = 60
 ) -> None:
     """Custom progress bar for wget downloads.
@@ -131,7 +131,7 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
         url = f"{dumps_url}{str(subdir)}/{str(file_path)}"
         try:
             print(f"Downloading {url}")
-            dump_file = wget.download(url, bar=progress_bar)
+            dump_file = wget.download(url, bar=_progress_bar)
         except HTTPError:
             print("File not found")
             return None
