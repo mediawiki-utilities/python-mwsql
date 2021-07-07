@@ -234,10 +234,10 @@ def _parse(
     :param doublequote: Controls how instances of quotechar appearing inside
         a field should themselves be quoted. When True, the character
         is doubled. When False, the escapechar is used as a prefix
-        to the quotechar, defaults to False
+        to the quotechar. Defaults to False.
     :type doublequote: bool, optional
-    :param strict: When True, raise exception Error on bad CSV input,
-        defaults to True
+    :param strict: When True, raise exception Error on bad CSV input.
+        Defaults to True.
     :type strict: bool, optional
     :return: A generator that yields from a list of CSV-formatted strings.
     :rtype: Iterator[List[str]]
