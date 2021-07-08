@@ -38,7 +38,7 @@ def _has_sql_attribute(line: str, attr_type: str) -> bool:
     return contains_element
 
 
-def _get_sql_attribute(line: str, attr_type: str) -> Optional[str]:
+def _get_sql_attribute(line: str, attr_type: str) -> Any:
     """Extract a SQL attribute from a string that contains it.
 
     :param line: A line from a SQL dump file.
@@ -65,6 +65,7 @@ def _get_sql_attribute(line: str, attr_type: str) -> Optional[str]:
             attr = line.strip().partition("Database: ")[-1]
 
         elif attr_type in ("table_name", "col_name", "dtype"):
+            # ignore type - mypy does not understand try... except here
             attr = re.search(attr_pattern[attr_type], line).group(1)  # type: ignore
 
         elif attr_type == "primary_key":
@@ -107,6 +108,9 @@ def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
     return types
 
 
+# TODO: Rethink how errors are handled and warnings raised, and
+# whether error handling should happen inside this function at all,
+# or in the caller function
 def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
     """Cast numerical values in a list of strings to float or int
     as specified by the dtypes parameter.
@@ -159,12 +163,15 @@ def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> Lis
                 # my PyCharm installation doesn't like this and things it won't work FYI. I haven't tested it though.
                 # You're right - I've changed this now.
                 print(f"ValueError: {e}")
+                raise
 
     if warn:
         # low priority: perhaps include the values too? or problematic value?
         # > I need to think about how to handle this because some files, notably
         # externallinks, have > 10^3 such values
-        warnings.warn("some rows could not be converted to Python dtypes")
+        warnings.warn(
+            "some values could not be converted to Python dtypes", UserWarning
+        )
 
     return converted
 
