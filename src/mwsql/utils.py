@@ -132,8 +132,8 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
         try:
             print(f"Downloading {url}")
             dump_file = wget.download(url, bar=_progress_bar)
-        except HTTPError:
-            print("File not found")
-            return None
+        except HTTPError as e:
+            print(f"HTTPError: {e}")
+            raise
 
     return Path(dump_file)
