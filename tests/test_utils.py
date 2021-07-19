@@ -1,6 +1,4 @@
 import os
-import sys
-from io import StringIO
 from pathlib import Path, PosixPath
 from urllib.error import HTTPError
 
@@ -8,23 +6,12 @@ import pytest
 
 from mwsql.utils import _open_file, head, load
 
+from .helpers import Capturing
+
 CURRENT_DIR = Path(__file__).parent
 DATA_DIR = CURRENT_DIR.parent / "data"
 FILEPATH_GZ = DATA_DIR / "testfile.sql.gz"
 FILEPATH_UNZIPPED = DATA_DIR / "testfile.sql"
-
-
-# Helper class for capturing stout
-class Capturing(list):
-    def __enter__(self):
-        self._stdout = sys.stdout
-        sys.stdout = self._stringio = StringIO()
-        return self
-
-    def __exit__(self, *args):
-        self.extend(self._stringio.getvalue().splitlines())
-        del self._stringio  # free up some memory
-        sys.stdout = self._stdout
 
 
 @pytest.mark.parametrize(
