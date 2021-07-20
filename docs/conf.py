@@ -26,8 +26,6 @@ author = "Slavina Stefanova"
 HERE = os.path.abspath(os.path.dirname(__file__))
 BASE_DIR = os.path.join(HERE, os.pardir)
 SRC_DIR = os.path.join(BASE_DIR, "src")
-print(BASE_DIR)
-print(SRC_DIR)
 
 # Get package metadata
 about = {}
