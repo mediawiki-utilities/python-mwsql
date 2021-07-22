@@ -3,7 +3,6 @@ graft src
 graft .github
 
 # Tests
-include tox.ini
 recursive-include tests *.py
 recursive-include tests *.yml
 
@@ -14,3 +13,6 @@ recursive-include docs *.svg
 recursive-include docs *.py
 recursive-include docs *.rst
 prune docs/_build
+
+# Data files
+recursive-include data *
