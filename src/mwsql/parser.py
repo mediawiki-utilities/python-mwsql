@@ -9,11 +9,6 @@ from typing import Any, Dict, Iterator, List, Optional
 
 
 def _has_sql_attribute(line: str, attr_type: str) -> bool:
-    """Check whether a string contains a specific SQL element
-    or statement.
-
-
-def _has_sql_attribute(line: str, attr_type: str) -> bool:
     """
     Check whether a string contains a specific SQL element
     or statement.
