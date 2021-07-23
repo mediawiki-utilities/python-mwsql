@@ -1,15 +1,15 @@
 """Utility functions used to download, open and display
- the contents of SQL dump files. Works with both .gz and
- uncompressed files.
+ the contents of Wikimedia SQL dump files.
 """
 
 import gzip
 import sys
-import wget  # type: ignore
-
+from contextlib import contextmanager
 from pathlib import Path
-from typing import Iterator, Optional, Union
+from typing import Iterator, Optional, TextIO, Union
 from urllib.error import HTTPError
+
+import wget  # type: ignore
 
 # Custom type
 PathObject = Union[str, Path]
@@ -17,54 +17,69 @@ PathObject = Union[str, Path]
 
 # TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
 # Done!
-def open_file(
-    file_path: PathObject, mode: str, encoding: Optional[str] = None
-) -> Iterator[str]:
-    """Open file and return a file handle. Works with both
-    .gz and uncompressed files.
+@contextmanager
+def _open_file(
+    file_path: PathObject, encoding: Optional[str] = None
+) -> Iterator[TextIO]:
+    """Custom context manager for opening both .gz and uncompressed files.
+
+    :param file_path: The path to the file
+    :type file_path: PathObject
+    :param encoding: Text encoding, defaults to None
+    :type encoding: Optional[str], optional
+    :yield: A file handle
+    :rtype: Iterator[TextIO]
     """
 
-    # if "b" in mode and encoding is not None:
-    #     raise ValueError("Argument 'encoding' not supported in binary mode")
-
     if str(file_path).endswith(".gz"):
-        with gzip.open(file_path, mode, encoding=encoding) as file_handle:
-            yield from file_handle
+        infile = gzip.open(file_path, mode="rt", encoding=encoding)
     else:
-        with open(file_path, mode, encoding=encoding) as file_handle:
-            yield from file_handle
+        infile = open(file_path, mode="r", encoding=encoding)
+    try:
+        yield infile
+    finally:
+        infile.close()
 
 
-def head(
-    file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8"
-) -> None:
+def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> None:
     """Display first n lines of a file. Works with both
     .gz and uncompressed files. Defaults to 10 lines.
+
+    :param file_path: The path to the file
+    :type file_path: PathObject
+    :param n_lines: Lines to display, defaults to 10
+    :type n_lines: int, optional
+    :param encoding: Text encoding, defaults to "utf-8"
+    :type encoding: str, optional
     """
 
-    if str(file_path).endswith(".gz"):
-        infile = open_file(file_path, "rt", encoding=encoding)
-    else:
-        infile = open_file(file_path, "r", encoding=encoding)
-
-    for line in infile:
-        if n_lines == 0:
-            break
-        try:
-            print(line.strip())
-            n_lines -= 1
-        except StopIteration:
-            return
+    with _open_file(file_path, encoding=encoding) as infile:
+        for line in infile:
+            if n_lines == 0:
+                break
+            try:
+                print(line.strip())
+                n_lines -= 1
+            except StopIteration:
+                return
     return
 
 
 # Minor but I would just get rid of the width parameter if you aren't going to use it
 # I tried but wget wouldn't work without it. Haven't actually looked into it,
 # but what I *think* happens is that while the progress_bar func itself doesn't use the width param, it gets passed as a kwarg to wget where it's necessary.
-def progress_bar(
+def _progress_bar(
     current: Union[int, float], total: Union[int, float], width: int = 60
 ) -> None:
-    """Custom progress bar for wget downloads"""
+    """Custom progress bar for wget downloads.
+
+    :param current: bytes downloaded so far
+    :type current: Union[int, float]
+    :param total: Total size of download in bytes or megabytes
+    :type total: Union[int, float]
+    :param width: Progress bar width in chars, defaults to 60
+    :type width: int, optional
+    """
 
     unit = "bytes"
 
@@ -82,9 +97,22 @@ def progress_bar(
     sys.stdout.flush()
 
 
-def load(database: str, filename: str) -> Optional[PathObject]:
-    """Load dump file from public dir if in PAWS, else download
-    from the web. Returns a file object.
+def load(database: str, filename: str, date: str = "latest") -> Optional[PathObject]:
+    """Load a dump file from a Wikimedia public directory if the
+    user is in a supported environment (PAWS, Toolforge...). Otherwise, download dump file from the web and save in the current working directory. In both cases,the function returns a path-like object which can be used to access the file. Does not check if the file already exists on the path.
+
+    :param database: The database backup dump to download a file from,
+        e.g. 'enwiki' (English Wikipedia). See a list of available
+        databases here: https://dumps.wikimedia.org/backup-index-bydb.html
+    :type database: str
+    :param filename: The name of the file to download, e.g. 'page' loads the
+        file {database}-{date}-page.sql.gz
+    :type filename: str
+    :param date: Date the dump was generated, defaults to "latest". If "latest"
+        is not used, the date format should be "YYYYMMDD"
+    :type date: str, optional
+    :return: Path to dump file
+    :rtype: Optional[PathObject]
     """
 
     # style: generally I only use ALL_CAPS variables when it's global so I would just change these to normal_var_names
@@ -92,8 +120,8 @@ def load(database: str, filename: str) -> Optional[PathObject]:
     # they're specifically for module level constants
     paws_root_dir = Path("/public/dumps/public/")
     dumps_url = "https://dumps.wikimedia.org/"
-    subdir = Path(database, "latest")
-    extended_filename = f"{database}-latest-{filename}.sql.gz"
+    subdir = Path(database, date)
+    extended_filename = f"{database}-{date}-{filename}.sql.gz"
     file_path = Path(extended_filename)
 
     if paws_root_dir.exists():
@@ -103,9 +131,9 @@ def load(database: str, filename: str) -> Optional[PathObject]:
         url = f"{dumps_url}{str(subdir)}/{str(file_path)}"
         try:
             print(f"Downloading {url}")
-            dump_file = wget.download(url, bar=progress_bar)
-        except HTTPError:
-            print("File not found")
-            return None
+            dump_file = wget.download(url, bar=_progress_bar)
+        except HTTPError as e:
+            print(f"HTTPError: {e}")
+            raise
 
     return Path(dump_file)
