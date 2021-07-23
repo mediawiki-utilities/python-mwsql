@@ -6,6 +6,7 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # type: ignore
+
 import sys
 from pathlib import Path
 
@@ -19,6 +20,7 @@ copyright = "2021, Slavina Stefanova"
 author = "Slavina Stefanova"
 
 # The full version, including alpha/beta/rc tags
+
 HERE = Path(__file__).parent.resolve()
 BASE_DIR = HERE.parent.resolve()
 SRC_DIR = BASE_DIR / "src"
