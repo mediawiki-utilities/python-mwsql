@@ -6,7 +6,6 @@ from setuptools import find_packages, setup
 BASE_DIR = Path(__file__).parent.resolve()
 SRC_DIR = BASE_DIR / "src"
 
-
 # Get package metadata
 about = {}
 with open(SRC_DIR / "mwsql" / "about.py") as fh:
