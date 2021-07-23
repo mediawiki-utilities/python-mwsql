@@ -1,4 +1,6 @@
-"""A set of utilities for processing MediaWiki SQL dump data"""
+"""
+A set of utilities for processing MediaWiki SQL dump data.
+"""
 
 import csv
 import sys
@@ -23,7 +25,9 @@ T = TypeVar("T", bound="Dump")
 
 
 class Dump:
-    """Class for parsing an SQL dump file and processing its contents"""
+    """
+    Class for parsing an SQL dump file and processing its contents.
+    """
 
     def __init__(
         self,
@@ -35,7 +39,8 @@ class Dump:
         source_file: PathObject,
         encoding: str,
     ) -> None:
-        """Dump class constructor.
+        """
+        Dump class constructor.
 
         :param database: The wiki database, e.g. 'enwiki' or 'dewikibooks'
         :type database: Optional[str]
@@ -77,8 +82,11 @@ class Dump:
 
     @property
     def encoding(self) -> str:
-        """Get the encoding used to read the dump file.
+        """
+        The encoding used to read the dump file.
 
+        :getter: Returns the current encoding
+        :setter: Sets the encoding to a new value
         :return: Text encoding
         :rtype: str
         """
@@ -87,20 +95,16 @@ class Dump:
 
     @encoding.setter
     def encoding(self, new_encoding: str) -> None:
-        """Set the encoding used to read the dump file.
-
-        :param new_encoding: Text encoding
-        :type new_encoding: str
-        """
 
         self._encoding = new_encoding
 
     @property
     def dtypes(self) -> Dict[str, type]:
-        """Mapping between col_names and native Python dtypes.
+        """
+        Mapping between col_names and native Python dtypes.
 
         :return: A mapping from the column names in a SQL table
-        to their respective Python data types. Example: {"ct_id": int}
+            to their respective Python data types. Example: {"ct_id": int}
         :rtype: Dict[str, type]
         """
 
@@ -110,7 +114,8 @@ class Dump:
 
     @classmethod
     def from_file(cls: Type[T], file_path: PathObject, encoding: str = "utf-8") -> T:
-        """Initialize Dump object from dump file.
+        """
+        Initialize Dump object from dump file.
 
         :param cls: A Dump class instance
         :type cls: Dump
@@ -118,7 +123,7 @@ class Dump:
             uncompressed file
         :type file_path: PathObject
         :param encoding: Text encoding, defaults to "utf-8" If you get
-        an encoding error when processing the file, try setting this
+            an encoding error when processing the file, try setting this
             parameter to 'Latin-1'
         :type encoding: str, optional
         :return: A Dump class instance
@@ -169,7 +174,8 @@ class Dump:
         strict_conversion: bool = False,
         **fmtparams: Any,
     ) -> Iterator[List[Any]]:
-        """Create a generator object from the rows.
+        """
+        Create a generator object from the rows.
 
         :param convert_dtypes: When set to True, numerical types are
             converted from str to int or float. Defaults to False.
@@ -201,7 +207,8 @@ class Dump:
                             yield row
 
     def to_csv(self, file_path: PathObject, **fmtparams: Any) -> None:
-        """Write Dump object to CSV file.
+        """
+        Write Dump object to CSV file.
 
         :param file_path: The file to write to. Will be created if it
             doesn't already exist. Will be overwritten if it does exist.
@@ -215,7 +222,8 @@ class Dump:
                 writer.writerow(row)
 
     def head(self, n_lines: int = 10, convert_dtypes: bool = False) -> None:
-        """Display first n rows.
+        """
+        Display first n rows.
 
         :param n_lines: Number of rows to display, defaults to 10
         :type n_lines: int, optional

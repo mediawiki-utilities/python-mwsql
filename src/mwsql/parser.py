@@ -1,4 +1,6 @@
-"""Parser functions used in src/dump.py"""
+"""
+Parser functions used in src/dump.py
+"""
 
 import csv
 import re
@@ -7,7 +9,8 @@ from typing import Any, Dict, Iterator, List, Optional
 
 
 def _has_sql_attribute(line: str, attr_type: str) -> bool:
-    """Check whether a string contains a specific SQL element
+    """
+    Check whether a string contains a specific SQL element
     or statement.
 
     :param line: A line from a SQL dump file.
@@ -19,10 +22,6 @@ def _has_sql_attribute(line: str, attr_type: str) -> bool:
     :rtype: bool
     """
 
-    # FYI: no need to update this because I think it's nice and simple but if you were trying to
-    # expand it to more use cases and finding the rules to get more complex, you would likely want to consider
-    # a regex for each like in get_sql_attribute.
-    # e.g., something like (with the caveat that I am not good at regexes): re.match('(^--).*(Database: )', line)
     line_start = {
         "database": "--",
         "insert": "INSERT INTO",
@@ -39,7 +38,8 @@ def _has_sql_attribute(line: str, attr_type: str) -> bool:
 
 
 def _get_sql_attribute(line: str, attr_type: str) -> Any:
-    """Extract a SQL attribute from a string that contains it.
+    """
+    Extract a SQL attribute from a string that contains it.
 
     :param line: A line from a SQL dump file.
     :type line: str
@@ -78,15 +78,13 @@ def _get_sql_attribute(line: str, attr_type: str) -> Any:
 
     except AttributeError:
         return None
-
-    # probably define attr as None before the try clause. right now if not of the if-else clauses matched, would throw a weird error
-    # Done!
+        
     return attr
 
 
-# I don't know much about the intricacies of types but I like this -- good and simple!
 def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
-    """Create mapping from SQL data types to Python data types.
+    """
+    Create mapping from SQL data types to Python data types.
 
     :param sql_dtypes: A mapping from the column names in a SQL table
         to their respective SQL data types.
@@ -108,11 +106,9 @@ def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
     return types
 
 
-# TODO: Rethink how errors are handled and warnings raised, and
-# whether error handling should happen inside this function at all,
-# or in the caller function
 def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
-    """Cast numerical values in a list of strings to float or int
+    """
+    Cast numerical values in a list of strings to float or int
     as specified by the dtypes parameter.
 
     :param values: A list of strings representing a row in a SQL table
@@ -160,15 +156,10 @@ def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> Lis
                 warn = True
                 converted.append(val)
             else:
-                # my PyCharm installation doesn't like this and things it won't work FYI. I haven't tested it though.
-                # You're right - I've changed this now.
                 print(f"ValueError: {e}")
                 raise
 
     if warn:
-        # low priority: perhaps include the values too? or problematic value?
-        # > I need to think about how to handle this because some files, notably
-        # externallinks, have > 10^3 such values
         warnings.warn(
             "some values could not be converted to Python dtypes", UserWarning
         )
@@ -177,7 +168,8 @@ def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> Lis
 
 
 def _split_tuples(line: str) -> List[str]:
-    """Split an INSERT INTO statement into a list of strings each
+    """
+    Split an INSERT INTO statement into a list of strings each
     representing a SQL table row.
 
     :param line: An INSERT INTO statement, e.g. "INSERT INTO `change_tag_def`
@@ -188,18 +180,6 @@ def _split_tuples(line: str) -> List[str]:
     :rtype: List[str]
     """
 
-    # I think the NULL replacement might need some tweaking. The challenge is two-fold:
-    # * making NULL into something that doesn't break the parser -- that's easy, either add quotes like you do or replace with None
-    # > I have opted for replacing NULL with the empty string when it's used
-    # to denote missing values (i.e. not part of some other string). The reason
-    # is that `None` is somewhat specific to pure Python while Pandas, Numpy, R, CSV, and others recognize the empty string as a missing value and sub it with their own null equivalent (NaN, NA, <na>, ...)
-    # * not making this replacement when e.g., NULL is just part of a real value like a page title as happens in Commons sometimes
-    # For the latter, I think you might need to a regex that only does the replacement when it sees any of the following
-    # which in theory should capture all the ways that NULL shows up as a full field value:
-    # * ,NULL,
-    # * (NULL,
-    # * ,NULL)
-    # > Good suggestion - I have implemented this regex.
     tuples = line.partition(" VALUES ")[-1].strip()
     # Sub NULL with the empty string
     pattern = r"(?<=[,(])NULL(?=[,)])"
@@ -220,7 +200,8 @@ def _parse(
     doublequote: bool = False,
     strict: bool = True,
 ) -> Iterator[List[str]]:
-    """Parse an INSERT INTO statement and return a generator that yields from a list of CSV-formatted strings, each representing a SQL table row. This
+    """
+    Parse an INSERT INTO statement and return a generator that yields from a list of CSV-formatted strings, each representing a SQL table row. This
     is essentially a wrapper around a csv.reader object and takes the same
     parameters, except it takes a string as input instead of an iterator-type
     object.

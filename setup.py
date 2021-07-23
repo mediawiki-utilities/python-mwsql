@@ -1,20 +1,18 @@
 # type: ignore
-import os
+from pathlib import Path
 
 from setuptools import find_packages, setup
 
-BASE_DIR = os.path.abspath(os.path.dirname(__file__))
-SRC_DIR = os.path.join(BASE_DIR, "src")
-
+BASE_DIR = Path(__file__).parent.resolve()
+SRC_DIR = BASE_DIR / "src"
 
 # Get package metadata
 about = {}
-with open(os.path.join(SRC_DIR, "mwsql", "about.py")) as fh:
+with open(SRC_DIR / "mwsql" / "about.py") as fh:
     exec(fh.read(), about)
 
 # Get long description from README
-with open(os.path.join(BASE_DIR, "README.rst")) as fh:
-    long_description = fh.read()
+long_description = (BASE_DIR / "README.rst").read_text(encoding="utf-8")
 
 
 setup(
@@ -29,6 +27,7 @@ setup(
     author=about["__author__"],
     author_email=about["__email__"],
     classifiers=[
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
@@ -36,8 +35,6 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
