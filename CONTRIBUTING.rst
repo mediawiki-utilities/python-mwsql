@@ -57,10 +57,11 @@ Code style
 
   .. code-block:: python
 
-     def some_func(x):
-         """Do magic stuff.
+     def add_one(number):
+         """
+         Add one to a number.
 
-         :param int x: A very important parameter.
+         :param int number: A very important parameter.
          :rtype: int
          """
 
@@ -85,9 +86,9 @@ Tests
 
   .. code-block:: python
 
-     def test_some_func():
-        assert func(2) == 4
-        assert func(3) == 6
+     def test_add_one():
+        assert func(2) == 3
+        assert func(4) == 5
 
 - You can run the test suite either through tox, or directly with pytest:
 
