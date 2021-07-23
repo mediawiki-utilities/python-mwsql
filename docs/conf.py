@@ -1,8 +1,4 @@
 # Configuration file for the Sphinx documentation builder.
-#
-# This file only contains a selection of the most common options. For a full
-# list see the documentation:
-# https://www.sphinx-doc.org/en/master/usage/configuration.html
 
 # -- Path setup --------------------------------------------------------------
 
@@ -10,10 +6,10 @@
 # add these directories to sys.path here. If the directory is relative to the
 # documentation root, use os.path.abspath to make it absolute, like shown here.
 # type: ignore
-import os
 import sys
+from pathlib import Path
 
-sys.path.insert(0, os.path.abspath("."))
+sys.path.insert(0, Path().resolve())
 
 
 # -- Project information -----------------------------------------------------
@@ -23,13 +19,13 @@ copyright = "2021, Slavina Stefanova"
 author = "Slavina Stefanova"
 
 # The full version, including alpha/beta/rc tags
-HERE = os.path.abspath(os.path.dirname(__file__))
-BASE_DIR = os.path.join(HERE, os.pardir)
-SRC_DIR = os.path.join(BASE_DIR, "src")
+HERE = Path(__file__).parent.resolve()
+BASE_DIR = HERE.parent.resolve()
+SRC_DIR = BASE_DIR / "src"
 
 # Get package metadata
 about = {}
-with open(os.path.join(SRC_DIR, "mwsql", "about.py")) as fh:
+with open(SRC_DIR / "mwsql" / "about.py") as fh:
     exec(fh.read(), about)
 
 version = release = about["__version__"]
