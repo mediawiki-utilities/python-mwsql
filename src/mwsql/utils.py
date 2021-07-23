@@ -1,5 +1,6 @@
-"""Utility functions used to download, open and display
- the contents of Wikimedia SQL dump files.
+"""
+Utility functions used to download, open and display
+the contents of Wikimedia SQL dump files.
 """
 
 import gzip
@@ -19,7 +20,8 @@ PathObject = Union[str, Path]
 def _open_file(
     file_path: PathObject, encoding: Optional[str] = None
 ) -> Iterator[TextIO]:
-    """Custom context manager for opening both .gz and uncompressed files.
+    """
+    Custom context manager for opening both .gz and uncompressed files.
 
     :param file_path: The path to the file
     :type file_path: PathObject
@@ -40,7 +42,8 @@ def _open_file(
 
 
 def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> None:
-    """Display first n lines of a file. Works with both
+    """
+    Display first n lines of a file. Works with both
     .gz and uncompressed files. Defaults to 10 lines.
 
     :param file_path: The path to the file
@@ -66,7 +69,8 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
 def _progress_bar(
     current: Union[int, float], total: Union[int, float], width: int = 60
 ) -> None:
-    """Custom progress bar for wget downloads.
+    """
+    Custom progress bar for wget downloads.
 
     :param current: bytes downloaded so far
     :type current: Union[int, float]
@@ -93,7 +97,8 @@ def _progress_bar(
 
 
 def load(database: str, filename: str, date: str = "latest") -> Optional[PathObject]:
-    """Load a dump file from a Wikimedia public directory if the
+    """
+    Load a dump file from a Wikimedia public directory if the
     user is in a supported environment (PAWS, Toolforge...). Otherwise, download dump file from the web and save in the current working directory. In both cases,the function returns a path-like object which can be used to access the file. Does not check if the file already exists on the path.
 
     :param database: The database backup dump to download a file from,

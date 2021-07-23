@@ -1,4 +1,6 @@
-"""Parser functions used in src/dump.py"""
+"""
+Parser functions used in src/dump.py
+"""
 
 import csv
 import re
@@ -7,7 +9,8 @@ from typing import Any, Dict, Iterator, List, Optional
 
 
 def _has_sql_attribute(line: str, attr_type: str) -> bool:
-    """Check whether a string contains a specific SQL element
+    """
+    Check whether a string contains a specific SQL element
     or statement.
 
     :param line: A line from a SQL dump file.
@@ -35,7 +38,8 @@ def _has_sql_attribute(line: str, attr_type: str) -> bool:
 
 
 def _get_sql_attribute(line: str, attr_type: str) -> Any:
-    """Extract a SQL attribute from a string that contains it.
+    """
+    Extract a SQL attribute from a string that contains it.
 
     :param line: A line from a SQL dump file.
     :type line: str
@@ -79,7 +83,8 @@ def _get_sql_attribute(line: str, attr_type: str) -> Any:
 
 
 def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
-    """Create mapping from SQL data types to Python data types.
+    """
+    Create mapping from SQL data types to Python data types.
 
     :param sql_dtypes: A mapping from the column names in a SQL table
         to their respective SQL data types.
@@ -102,7 +107,8 @@ def _map_dtypes(sql_dtypes: Dict[str, str]) -> Dict[str, type]:
 
 
 def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> List[Any]:
-    """Cast numerical values in a list of strings to float or int
+    """
+    Cast numerical values in a list of strings to float or int
     as specified by the dtypes parameter.
 
     :param values: A list of strings representing a row in a SQL table
@@ -162,7 +168,8 @@ def _convert(values: List[str], dtypes: List[type], strict: bool = False) -> Lis
 
 
 def _split_tuples(line: str) -> List[str]:
-    """Split an INSERT INTO statement into a list of strings each
+    """
+    Split an INSERT INTO statement into a list of strings each
     representing a SQL table row.
 
     :param line: An INSERT INTO statement, e.g. "INSERT INTO `change_tag_def`
@@ -193,7 +200,8 @@ def _parse(
     doublequote: bool = False,
     strict: bool = True,
 ) -> Iterator[List[str]]:
-    """Parse an INSERT INTO statement and return a generator that yields from a list of CSV-formatted strings, each representing a SQL table row. This
+    """
+    Parse an INSERT INTO statement and return a generator that yields from a list of CSV-formatted strings, each representing a SQL table row. This
     is essentially a wrapper around a csv.reader object and takes the same
     parameters, except it takes a string as input instead of an iterator-type
     object.
