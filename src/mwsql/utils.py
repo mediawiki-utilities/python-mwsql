@@ -15,8 +15,6 @@ import wget  # type: ignore
 PathObject = Union[str, Path]
 
 
-# TODO: eventually will want to update the function calls to match rest of library -- e.g., file_path: string, mode: string, etc.
-# Done!
 @contextmanager
 def _open_file(
     file_path: PathObject, encoding: Optional[str] = None
@@ -65,9 +63,6 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
     return
 
 
-# Minor but I would just get rid of the width parameter if you aren't going to use it
-# I tried but wget wouldn't work without it. Haven't actually looked into it,
-# but what I *think* happens is that while the progress_bar func itself doesn't use the width param, it gets passed as a kwarg to wget where it's necessary.
 def _progress_bar(
     current: Union[int, float], total: Union[int, float], width: int = 60
 ) -> None:
@@ -115,9 +110,6 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
     :rtype: Optional[PathObject]
     """
 
-    # style: generally I only use ALL_CAPS variables when it's global so I would just change these to normal_var_names
-    # Oh, cool! I though all caps were for constants in general but TIL
-    # they're specifically for module level constants
     paws_root_dir = Path("/public/dumps/public/")
     dumps_url = "https://dumps.wikimedia.org/"
     subdir = Path(database, date)
