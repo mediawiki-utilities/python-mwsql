@@ -133,4 +133,5 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
             print(f"HTTPError: {e}")
             raise
 
+    print("\n")
     return Path(dump_file)
