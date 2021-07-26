@@ -1,32 +1,33 @@
-import os
+# type: ignore
+from pathlib import Path
 
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
-BASE_DIR = os.path.dirname(__file__)
-SRC_DIR = os.path.join(base_dir, 'src')
+BASE_DIR = Path(__file__).parent.resolve()
+SRC_DIR = BASE_DIR / "src"
 
-
-# Fetch package metadata
+# Get package metadata
 about = {}
-with open(os.path.join(SRC_DIR, "mwsql", "__about__.py")) as fh:
+with open(SRC_DIR / "mwsql" / "about.py") as fh:
     exec(fh.read(), about)
 
-with open(os.path.join(base_dir, "README.md")) as fh:
-    long_description = fh.read()
+# Get long description from README
+long_description = (BASE_DIR / "README.rst").read_text(encoding="utf-8")
 
 
 setup(
     name=about["__title__"],
     version=about["__version__"],
     description=about["__summary__"],
-    keywords=['sql', 'dump', 'wikimedia', 'wikipedia'],
+    keywords=["sql", "dump", "wikimedia", "wikipedia"],
     long_description=long_description,
-    long_description_content_type="text/x-md",
+    long_description_content_type="text/x-rst",
     license=about["__license__"],
     url=about["__url__"],
     author=about["__author__"],
     author_email=about["__email__"],
     classifiers=[
+        "Development Status :: 4 - Beta",
         "License :: OSI Approved :: MIT License",
         "Natural Language :: English",
         "Operating System :: OS Independent",
@@ -34,11 +35,10 @@ setup(
         "Programming Language :: Python :: 3",
         "Programming Language :: Python :: 3.8",
         "Programming Language :: Python :: 3.9",
-        "Programming Language :: Python :: Implementation :: CPython",
-        "Programming Language :: Python :: Implementation :: PyPy",
-        "Topic :: Security :: Cryptography",
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=[]
+    install_requires=["wget >= 3.2"],
+    include_package_data=True,
+    zip_safe=False,
 )

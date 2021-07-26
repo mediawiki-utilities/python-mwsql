@@ -2,9 +2,9 @@
 # See the LICENSE file in the root of this repository
 # for complete details.
 
-'''Package metadata used by setup.py'''
+# type: ignore
 
-from mwsql.__about__ import (
+from .about import (
     __author__,
     __copyright__,
     __email__,
@@ -14,9 +14,13 @@ from mwsql.__about__ import (
     __url__,
     __version__,
 )
-
+from .dump import Dump
+from .utils import head, load
 
 __all__ = [
+    "head",
+    "load",
+    "Dump",
     "__title__",
     "__summary__",
     "__url__",
