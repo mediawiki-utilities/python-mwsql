@@ -1,5 +1,5 @@
-``mwsql``
-=========
+Overview
+========
 
 ``mwsql`` provides utilities for working with Wikimedia SQL dump files.
 It supports Python 3.8 and later versions.
