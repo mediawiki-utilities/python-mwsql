@@ -83,7 +83,7 @@ Contributions are most welcome – we have put together a guide on how to `get s
 
 
 .. _`MIT license`: https://choosealicense.com/licenses/mit/
-.. _`Read the Docs`: todo
-.. _`usage examples`: todo
-.. _`get started`: todo
-.. _`issue tracker`: todo
+.. _`Read the Docs`: https://mwsql.readthedocs.io/en/latest/
+.. _`usage examples`: https://mwsql.readthedocs.io/en/latest/examples.html
+.. _`get started`: https://mwsql.readthedocs.io/en/latest/contributing.html
+.. _`issue tracker`: https://github.com/blancadesal/mwsql/issues
