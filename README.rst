@@ -29,7 +29,7 @@ Basic Usage
 .. code-block:: pycon
 
     >>> from mwsql import Dump
-    >>> dump = dump.from_file('simplewiki-latest-change_tag_def.sql.gz')
+    >>> dump = Dump.from_file('simplewiki-latest-change_tag_def.sql.gz')
     >>> dump.head(5)
     ['ctd_id', 'ctd_name', 'ctd_user_defined', 'ctd_count']
     ['1', 'mw-replace', '0', '10453']
