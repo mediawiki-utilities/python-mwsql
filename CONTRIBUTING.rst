@@ -29,22 +29,23 @@ Next, get an up to date checkout of the ``mwsql`` repository via ``SSH``:
 
 .. code-block:: bash
 
-   $ git clone git@github.com:blancadesal/mwsql.git
+    $ git clone git@github.com:blancadesal/mwsql.git
 
 or if you want to use git via ``https``:
 
 .. code-block:: bash
 
-   $ git clone https://github.com/blancadesal/mwsql.git
+    $ git clone https://github.com/blancadesal/mwsql.git
 
 Change into the newly created directory and install an editable version of ``mwsql``:
 
 .. code-block:: bash
 
-   $ cd mwsql
-   $ pip install -e .
+    $ cd mwsql
+    $ pip install -e .
 
 We highly recommend installing all the development dependencies mentioned in the following two sections: Code style and Tests.
+
 
 Code style
 ----------
