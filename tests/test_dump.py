@@ -11,6 +11,7 @@ CURRENT_DIR = Path(__file__).parent
 DATA_DIR = CURRENT_DIR.parent / "data"
 FILEPATH_GZ = DATA_DIR / "testfile.sql.gz"
 FILEPATH_UNZIPPED = DATA_DIR / "testfile.sql"
+FILEPATH_UNZIPPED_WITH_NULL_VALUES = DATA_DIR / "testfile-with-null-values.sql"
 
 
 @pytest.fixture
@@ -21,6 +22,11 @@ def dump_gz():
 @pytest.fixture
 def dump_unzipped():
     return Dump.from_file(FILEPATH_UNZIPPED)
+
+
+@pytest.fixture
+def dump_unzipped_with_null_values():
+    return Dump.from_file(FILEPATH_UNZIPPED_WITH_NULL_VALUES)
 
 
 def test_from_file_gz(dump_gz):
@@ -91,6 +97,30 @@ def test_rows_converted(dump_gz):
     assert first == [1, "mw-replace", 0, 10200]
     second = next(rows)
     assert second == [2, "visualeditor", 0, 305860]
+
+
+def test_rows_unconverted_with_null_values(dump_unzipped_with_null_values):
+    rows = dump_unzipped_with_null_values.rows(convert_dtypes=False)
+    first = next(rows)
+    assert first == ["", "mw-replace", "0", "10200"]
+    second = next(rows)
+    assert second == ["2", "", "0", "305860"]
+    third = next(rows)
+    assert third == ["3", "mw-undo", "", "58220"]
+    fourth = next(rows)
+    assert fourth == ["4", "mw-rollback", "0", ""]
+
+
+def test_rows_converted_with_null_values(dump_unzipped_with_null_values):
+    rows = dump_unzipped_with_null_values.rows(convert_dtypes=True)
+    first = next(rows)
+    assert first == ["", "mw-replace", 0, 10200]
+    second = next(rows)
+    assert second == [2, "", 0, 305860]
+    third = next(rows)
+    assert third == [3, "mw-undo", "", 58220]
+    fourth = next(rows)
+    assert fourth == [4, "mw-rollback", 0, ""]
 
 
 expected_out_unconverted = [
