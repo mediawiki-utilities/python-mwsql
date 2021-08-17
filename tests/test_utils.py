@@ -25,12 +25,12 @@ FILEPATH_UNZIPPED = DATA_DIR / "testfile.sql"
         ),
         (
             "simplewiki",
-            "change_tag_def",
-            "20210701",
-            "simplewiki-20210701-change_tag_def.sql.gz",
+            "change_tag",
+            "latest",
+            "simplewiki-latest-change_tag.sql.gz",
         ),
         ("bewiki", "site_stats", "latest", "bewiki-latest-site_stats.sql.gz"),
-        ("nlwiktionary", "babel", "20210501", "nlwiktionary-20210501-babel.sql.gz"),
+        ("nlwiktionary", "sites", "latest", "nlwiktionary-latest-sites.sql.gz"),
     ],
 )
 def test_load(database, filename, date, expected):
