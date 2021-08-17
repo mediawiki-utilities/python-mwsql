@@ -102,7 +102,7 @@ def test_rows_converted(dump_gz):
 def test_rows_unconverted_with_null_values(dump_unzipped_with_null_values):
     rows = dump_unzipped_with_null_values.rows(convert_dtypes=False)
     first = next(rows)
-    assert first == ["", "mw-replace", "0", "10200"]
+    assert first == ["", "mw-replace?NULL", "0", "10200"]
     second = next(rows)
     assert second == ["2", "", "0", "305860"]
     third = next(rows)
@@ -114,7 +114,7 @@ def test_rows_unconverted_with_null_values(dump_unzipped_with_null_values):
 def test_rows_converted_with_null_values(dump_unzipped_with_null_values):
     rows = dump_unzipped_with_null_values.rows(convert_dtypes=True)
     first = next(rows)
-    assert first == ["", "mw-replace", 0, 10200]
+    assert first == ["", "mw-replace?NULL", 0, 10200]
     second = next(rows)
     assert second == [2, "", 0, 305860]
     third = next(rows)
