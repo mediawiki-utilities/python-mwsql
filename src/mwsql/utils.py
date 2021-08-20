@@ -96,7 +96,9 @@ def _progress_bar(
     sys.stdout.flush()
 
 
-def load(database: str, filename: str, date: str = "latest") -> Optional[PathObject]:
+def load(
+    database: str, filename: str, date: str = "latest", extension: str = "sql"
+) -> Optional[PathObject]:
     """
     Load a dump file from a Wikimedia public directory if the
     user is in a supported environment (PAWS, Toolforge...). Otherwise, download dump file from the web and save in the current working directory. In both cases,the function returns a path-like object which can be used to access the file. Does not check if the file already exists on the path.
@@ -118,7 +120,7 @@ def load(database: str, filename: str, date: str = "latest") -> Optional[PathObj
     paws_root_dir = Path("/public/dumps/public/")
     dumps_url = "https://dumps.wikimedia.org/"
     subdir = Path(database, date)
-    extended_filename = f"{database}-{date}-{filename}.sql.gz"
+    extended_filename = f"{database}-{date}-{filename}.{extension}.gz"
     file_path = Path(extended_filename)
 
     if paws_root_dir.exists():

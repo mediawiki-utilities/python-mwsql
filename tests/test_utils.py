@@ -15,26 +15,28 @@ FILEPATH_UNZIPPED = DATA_DIR / "testfile.sql"
 
 
 @pytest.mark.parametrize(
-    "database,filename,date,expected",
+    "database,filename,date,extension,expected",
     [
         (
             "simplewiki",
             "change_tag_def",
             "latest",
+            "sql",
             "simplewiki-latest-change_tag_def.sql.gz",
         ),
         (
             "simplewiki",
             "change_tag",
             "latest",
+            "sql",
             "simplewiki-latest-change_tag.sql.gz",
         ),
-        ("bewiki", "site_stats", "latest", "bewiki-latest-site_stats.sql.gz"),
-        ("nlwiktionary", "sites", "latest", "nlwiktionary-latest-sites.sql.gz"),
+        ("bewiki", "site_stats", "latest", "sql", "bewiki-latest-site_stats.sql.gz"),
+        ("nlwiktionary", "sites", "latest", "sql", "nlwiktionary-latest-sites.sql.gz"),
     ],
 )
-def test_load(database, filename, date, expected):
-    f = load(database, filename, date)
+def test_load(database, filename, date, extension, expected):
+    f = load(database, filename, date, extension)
     assert f == PosixPath(expected)
     os.remove(f)
 
