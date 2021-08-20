@@ -113,6 +113,8 @@ def load(
     :param date: Date the dump was generated, defaults to "latest". If "latest"
         is not used, the date format should be "YYYYMMDD"
     :type date: str, optional
+    :param extension: The file extension. Defaults to 'sql'
+    :type extension: str
     :return: Path to dump file
     :rtype: Optional[PathObject]
     """
