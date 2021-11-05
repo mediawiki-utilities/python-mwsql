@@ -1,12 +1,15 @@
 import os
 from pathlib import Path, PosixPath
-from urllib.error import HTTPError
 
 import pytest
+from requests.exceptions import HTTPError
 
 from mwsql.utils import _open_file, head, load
 
 from .helpers import Capturing
+
+# from urllib.error import HTTPError
+
 
 CURRENT_DIR = Path(__file__).parent
 DATA_DIR = CURRENT_DIR.parent / "data"

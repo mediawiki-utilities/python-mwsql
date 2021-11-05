@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterator, Optional, TextIO, Union
 from urllib.error import HTTPError
 
-import wget  # type: ignore
+import requests  # type: ignore
 
 # Custom type
 PathObject = Union[str, Path]
@@ -129,12 +129,16 @@ def load(
         dump_file = Path(paws_root_dir, subdir, file_path)
 
     else:
-        url = f"{dumps_url}{str(subdir)}/{str(file_path)}"
+        url = f"{dumps_url}{str(subdir)}/{str(extended_filename)}"
         try:
-            print(f"Downloading {url}")
-            dump_file = wget.download(url, bar=_progress_bar)
+            response = requests.get(url)
+            response.raise_for_status()
+            response.encoding = "utf-8"
+            with open(file_path, "wb") as f:
+                f.write(response.content)
+            dump_file = file_path
         except HTTPError as e:
-            print(f"HTTPError: {e}")
-            raise
+            print(f"Error downloading {extended_filename}: {e}")
+            return None
 
     return Path(dump_file)
