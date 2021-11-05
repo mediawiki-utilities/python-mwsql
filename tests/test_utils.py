@@ -2,7 +2,7 @@ import os
 from pathlib import Path, PosixPath
 
 import pytest
-from requests.exceptions import HTTPError
+import requests
 
 from mwsql.utils import _open_file, head, load
 
@@ -45,7 +45,7 @@ def test_load(database, filename, date, extension, expected):
 
 
 def test_load_HTTPError():
-    with pytest.raises(HTTPError):
+    with pytest.raises(requests.exceptions.HTTPError):
         load("simplewiki", "non-existing-filename", "latest")
 
 
