@@ -4,13 +4,12 @@ the contents of Wikimedia SQL dump files.
 """
 
 import gzip
-import sys
 from contextlib import contextmanager
 from pathlib import Path
 from typing import Iterator, Optional, TextIO, Union
-from urllib.error import HTTPError
 
 import requests  # type: ignore
+from tqdm import tqdm  # type: ignore
 
 # Custom type
 PathObject = Union[str, Path]
@@ -66,34 +65,26 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
     return
 
 
-def _progress_bar(
-    current: Union[int, float], total: Union[int, float], width: int = 60
-) -> None:
+def download_file(url: str, file_name: str) -> Path:
     """
-    Custom progress bar for wget downloads.
-
-    :param current: bytes downloaded so far
-    :type current: Union[int, float]
-    :param total: Total size of download in bytes or megabytes
-    :type total: Union[int, float]
-    :param width: Progress bar width in chars, defaults to 60
-    :type width: int, optional
+    Download a file from a URL and show a progress indicator. Return the path to the downloaded file.
+    :param url: URL to download from
+    :param file_name: name of the file to download
+    :return: path to the downloaded file
     """
-
-    unit = "bytes"
-
-    # Show file size in MB for large files
-    if total >= 100000:
-        MB = 1024 * 1024
-        current = current / MB
-        total = total / MB
-        unit = "MB"
-
-    progress = current / total
-    progress_message = f"Progress: \
-    {progress:.0%} [{current:.1f} / {total:.1f}] {unit}"
-    sys.stdout.write("\r" + progress_message)
-    sys.stdout.flush()
+    response = requests.get(url, stream=True)
+    response.raise_for_status()
+    total_size = int(response.headers.get("content-length", 0))
+    block_size = 1024
+    t = tqdm(total=total_size, unit="iB", unit_scale=True)
+    with open(file_name, "wb") as f:
+        for data in response.iter_content(block_size):
+            t.update(len(data))
+            f.write(data)
+    t.close()
+    if total_size != 0 and t.n != total_size:
+        raise RuntimeError(f"Downloaded {t.n} bytes, expected {total_size} bytes")
+    return Path(file_name)
 
 
 def load(
@@ -126,19 +117,8 @@ def load(
     file_path = Path(extended_filename)
 
     if paws_root_dir.exists():
-        dump_file = Path(paws_root_dir, subdir, file_path)
+        return Path(paws_root_dir, subdir, file_path)
 
     else:
         url = f"{dumps_url}{str(subdir)}/{str(extended_filename)}"
-        try:
-            response = requests.get(url)
-            response.raise_for_status()
-            response.encoding = "utf-8"
-            with open(file_path, "wb") as f:
-                f.write(response.content)
-            dump_file = file_path
-        except HTTPError as e:
-            print(f"Error downloading {extended_filename}: {e}")
-            return None
-
-    return Path(dump_file)
+        return download_file(url, extended_filename)
