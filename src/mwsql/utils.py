@@ -65,25 +65,32 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
     return
 
 
-def download_file(url: str, file_name: str) -> Path:
+def download_file(url: str, file_name: str) -> Optional[Path]:
     """
     Download a file from a URL and show a progress indicator. Return the path to the downloaded file.
     :param url: URL to download from
     :param file_name: name of the file to download
     :return: path to the downloaded file
     """
-    response = requests.get(url, stream=True)
+
+    session = requests.Session()
+    response = session.get(url, stream=True)
     response.raise_for_status()
     total_size = int(response.headers.get("content-length", 0))
-    block_size = 1024
-    t = tqdm(total=total_size, unit="iB", unit_scale=True)
-    with open(file_name, "wb") as f:
+    block_size = 4096
+    progress_bar = tqdm(total=total_size, unit="iB", unit_scale=True)
+
+    with open(file_name, "wb") as outfile:
         for data in response.iter_content(block_size):
-            t.update(len(data))
-            f.write(data)
-    t.close()
-    if total_size != 0 and t.n != total_size:
-        raise RuntimeError(f"Downloaded {t.n} bytes, expected {total_size} bytes")
+            progress_bar.update(len(data))
+            outfile.write(data)
+    progress_bar.close()
+
+    if total_size != 0 and progress_bar.n != total_size:
+        raise RuntimeError(
+            f"Downloaded {progress_bar.n} bytes, expected {total_size} bytes"
+        )
+
     return Path(file_name)
 
 
