@@ -1,12 +1,15 @@
 import os
 from pathlib import Path, PosixPath
-from urllib.error import HTTPError
 
 import pytest
+import requests
 
 from mwsql.utils import _open_file, head, load
 
 from .helpers import Capturing
+
+# from urllib.error import HTTPError
+
 
 CURRENT_DIR = Path(__file__).parent
 DATA_DIR = CURRENT_DIR.parent / "data"
@@ -42,7 +45,7 @@ def test_load(database, filename, date, extension, expected):
 
 
 def test_load_HTTPError():
-    with pytest.raises(HTTPError):
+    with pytest.raises(requests.exceptions.HTTPError):
         load("simplewiki", "non-existing-filename", "latest")
 
 

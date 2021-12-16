@@ -40,7 +40,7 @@ setup(
     ],
     package_dir={"": "src"},
     packages=find_packages(where="src"),
-    install_requires=["wget >= 3.2"],
+    install_requires=["requests >= 2.26", "tqdm >= 4.62"],
     include_package_data=True,
     zip_safe=False,
 )
