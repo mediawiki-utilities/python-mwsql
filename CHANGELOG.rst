@@ -9,6 +9,16 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
  * PATCH version when you make backwards-compatible bug fixes.
 
 
+0.1.5 (2022-01-18)
+-------------------
+
+Changes
+^^^^^^^
+
+- Add support for Python 3.10.
+- Drop support for Python 3.6.
+
+
 0.1.4 (2021-12-19)
 -------------------
 
@@ -17,4 +27,3 @@ Changes
 
 - Use ``requests`` instead of ``wget`` to download files.
 - Use ``tqdm`` to show progress bar.
-
