@@ -2,7 +2,7 @@ Overview
 ========
 
 ``mwsql`` provides utilities for working with Wikimedia SQL dump files.
-It supports Python 3.6 and later versions.
+It supports Python 3.7 and later versions.
 
 ``mwsql`` abstracts the messiness of working with SQL dump files.
 Each Wikimedia SQL dump file contains one database table.
