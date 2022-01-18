@@ -1,12 +1,12 @@
 repos:
   - repo: https://github.com/psf/black
-    rev: 21.5b2
+    rev: 21.12b0
     hooks:
       - id: black
         language_version: python3.8
 
   - repo: https://github.com/PyCQA/isort
-    rev: 5.9.1
+    rev: 5.10.1
     hooks:
       - id: isort
         # args: ["--profile", "black", "--filter-files"]
@@ -21,14 +21,14 @@ repos:
         language_version: python3.8
 
   - repo: https://github.com/pre-commit/mirrors-mypy
-    rev: v0.910
+    rev: v0.931
     hooks:
       - id: mypy
         exclude: ^tests/
         args: [--disallow-untyped-defs, --disallow-untyped-calls, --check-untyped-defs]
 
   - repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.0.1
+    rev: v4.1.0
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
