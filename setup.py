@@ -14,6 +14,11 @@ with open(SRC_DIR / "mwsql" / "about.py") as fh:
 # Get long description from README
 long_description = (BASE_DIR / "README.rst").read_text(encoding="utf-8")
 
+# Dev dependencies
+EXTRAS_REQUIRE = {
+    "docs": ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"],
+}
+
 
 setup(
     name=about["__title__"],
@@ -41,6 +46,7 @@ setup(
     package_dir={"": "src"},
     packages=find_packages(where="src"),
     install_requires=["requests >= 2.27", "tqdm >= 4.62"],
+    extras_require=EXTRAS_REQUIRE,
     include_package_data=True,
     zip_safe=False,
 )
