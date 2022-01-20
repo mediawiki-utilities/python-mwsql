@@ -18,7 +18,6 @@ project = "mwsql"
 copyright = "2021, Slavina Stefanova"
 author = "Slavina Stefanova"
 
-# The full version, including alpha/beta/rc tags
 HERE = Path(__file__).parent.resolve()
 BASE_DIR = HERE.parent.resolve()
 SRC_DIR = BASE_DIR / "src"
