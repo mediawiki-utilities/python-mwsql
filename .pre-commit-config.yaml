@@ -32,3 +32,5 @@ repos:
     hooks:
       - id: trailing-whitespace
       - id: end-of-file-fixer
+      - id: check-toml
+      - id: check-yaml
