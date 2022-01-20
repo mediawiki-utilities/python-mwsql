@@ -16,7 +16,7 @@ long_description = (BASE_DIR / "README.rst").read_text(encoding="utf-8")
 
 # Dev dependencies
 EXTRAS_REQUIRE = {
-    "docs": ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme"],
+    "docs": ["sphinx", "sphinx-copybutton", "sphinx-rtd-theme", "sphinx-autobuild"],
     "tests": ["pytest>=6.2.5"],
     "pre-commit": ["pre-commit"],
     "typing": ["mypy>=0.931"],

@@ -7,6 +7,7 @@ Loading a dump file
 
 `Wikimedia SQL dump files`_ are publicly available and can be downloaded from the web.
 They can also be directly accessed through Wikimedia environments like PAWS or Toolforge.
+
 ``mwsql`` includes a load utility for easy (down)loading of dump files – All you need to know is which file you need.
 For this example, we want to download the latest ``pages`` dump from the Simple English Wikipedia.
 If we go to https://dumps.wikimedia.org/simplewiki/latest/, we see that this file is called ``simplewiki-latest-page.sql.gz``.
@@ -82,7 +83,7 @@ This can be changed to anything you want by specifying it in the function call:
 Creating a dump object from file
 --------------------------------
 
-The main use of the ``mwsql`` library is to parse an SQL dump file and turn it into an object that is easier to work with.
+The main use of the ``mwsql`` library is to parse an SQL dump file and turn it into a Python object that is easier to work with.
 
 .. code-block:: python
 
