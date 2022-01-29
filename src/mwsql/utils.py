@@ -127,5 +127,6 @@ def load(
         return Path(paws_root_dir, subdir, file_path)
 
     else:
-        url = f"{dumps_url}{str(subdir)}/{str(extended_filename)}"
+        subdir_str = str(subdir).replace('\\', '/')
+        url = f"{dumps_url}{subdir_str}/{str(extended_filename)}"
         return download_file(url, extended_filename)
