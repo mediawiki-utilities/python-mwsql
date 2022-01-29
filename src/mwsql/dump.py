@@ -17,7 +17,7 @@ from .parser import (
 from .utils import _open_file
 
 # Allow long field names
-csv.field_size_limit(sys.maxsize)
+csv.field_size_limit(min(sys.maxsize, 2147483647))
 
 # Custom types
 PathObject = Union[str, Path]
