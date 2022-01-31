@@ -20,7 +20,7 @@ __title__ = "mwsql"
 __summary__ = "mwsql is a set of utilities for processing" " MediaWiki SQL dump data."
 __url__ = "https://github.com/blancadesal/mwsql"
 
-__version__ = "0.1.4"
+__version__ = "0.1.5"
 
 __author__ = "Slavina Stefanova"
 __email__ = "slavina.stefanova@gmail.com"
