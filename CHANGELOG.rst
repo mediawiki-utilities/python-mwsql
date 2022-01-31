@@ -15,6 +15,7 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
 Changes
 ^^^^^^^
 
+- Fix some compatibility issues for Windows users.
 - Add support for Python 3.10.
 - Drop support for Python 3.6.
 
