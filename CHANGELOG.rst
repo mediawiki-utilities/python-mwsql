@@ -9,7 +9,7 @@ Given a version number MAJOR.MINOR.PATCH, increment the:
  * PATCH version when you make backwards-compatible bug fixes.
 
 
-0.1.5 (2022-01-18)
+0.1.5 (2022-01-31)
 -------------------
 
 Changes
