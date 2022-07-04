@@ -44,7 +44,28 @@ Change into the newly created directory and install an editable version of ``mws
     $ cd mwsql
     $ pip install -e .
 
-We highly recommend installing all the development dependencies mentioned in the following two sections: Code style and Tests.
+pip will install all the necessary dependencies for you, no need to install from a separate ``requirements.txt`` file.
+
+Dev dependencies
+----------------
+
+The only dependency you *really* need to install is tox_. It will handle everyhing else for you,
+including running tests, formatting and linting through pre-commit, and building and serving the latest version of the documentation. Below are a few examples of how to run tox:
+
+.. code-block:: bash
+
+    $ tox
+    # This will run the full pytest suite, as well as pre-commit.
+    # These are the same tests that are run by the CI
+
+    $ tox -e pre-commit
+    # This will run the pre-commit linting and formatting checks
+
+    $ tox -e docs
+    # This will run the documentation build process
+
+    $ tox -e serve-docs
+    # Live-serve docs with Sphinx autobuild
 
 
 Code style
@@ -66,18 +87,14 @@ Code style
         :rtype: int
         """
 
-- As long as you run the tox_ suite before opening a PR, you should be fine.
+- As long as you run the tox_ suite before submitting a PR, you should be fine.
   Tox runs all the tools above by calling pre-commit_. It also runs the whole pytest_ suite (see Tests below) across all supported Python versions, the same as the CI workflow.
 
 .. code-block:: bash
 
   $ tox
 
-- If you want to run pre-commit on its own, you can do so by calling it directly:
-
-.. code-block:: bash
-
-  $ pre-commit run --all-files
+- See the section above how to run pre-commit on its own via tox
 
 
 Tests
