@@ -119,7 +119,7 @@ class Dump:
 
         :param cls: A Dump class instance
         :type cls: Dump
-        :param file_path: Path to source SQL dum file. Can be a .gz or an
+        :param file_path: Path to source SQL dump file. Can be a .gz or an
             uncompressed file
         :type file_path: PathObject
         :param encoding: Text encoding, defaults to "utf-8" If you get
