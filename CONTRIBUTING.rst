@@ -75,15 +75,16 @@ Code style
   Static typing is enforced using mypy_.
   Code that does not follow these conventions won't pass our CI.
   These tools are configured in either ``tox.ini`` or ``pyproject.toml``.
-- Make sure your docstrings are formatted using the Sphinx-style format like in the example below:
+- Make sure your docstrings are formatted using the `Sphinx-style format`_ like in the example below:
 
 .. code-block:: python
 
-    def add_one(number):
+    def add_one(number: int) -> int:
         """
         Add one to a number.
 
-        :param int number: A very important parameter.
+        :param number: A very important parameter.
+        :type number: int
         :rtype: int
         """
 
@@ -146,6 +147,7 @@ Docs
 .. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
 .. _reStructuredText: https://www.sphinx-doc.org/en/stable/usage/
+.. _`Sphinx-style format`: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html#the-sphinx-docstring-format
 .. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/restructuredtext/basics.html
 .. _CI: https://github.com/blancadesal/mwsql/actions
 .. _black: https://github.com/psf/black
