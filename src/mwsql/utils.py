@@ -68,7 +68,7 @@ def head(file_path: PathObject, n_lines: int = 10, encoding: str = "utf-8") -> N
 def download_file(url: str, file_name: str) -> Optional[Path]:
     """
     Download a file from a URL and show a progress indicator. Return the path to the downloaded file.
-    
+
     :param url: URL to download from
     :type url: str
     :param file_name: name of the file to download
