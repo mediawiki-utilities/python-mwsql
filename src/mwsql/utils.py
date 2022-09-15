@@ -72,7 +72,7 @@ def download_file(url: str, file_name: str) -> Optional[Path]:
     :param url: URL to download from
     :type url: str
     :param file_name: name of the file to download
-    type file_name: str
+    :type file_name: str
     :return: path to the downloaded file
     :rtype: Optional[Path]
     """
