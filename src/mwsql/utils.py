@@ -69,8 +69,11 @@ def download_file(url: str, file_name: str) -> Optional[Path]:
     """
     Download a file from a URL and show a progress indicator. Return the path to the downloaded file.
     :param url: URL to download from
+    :type url: str
     :param file_name: name of the file to download
+    type file_name: str
     :return: path to the downloaded file
+    :rtype: Optional[Path]
     """
 
     session = requests.Session()
