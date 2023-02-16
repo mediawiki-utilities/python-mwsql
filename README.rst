@@ -1,3 +1,6 @@
+[![PyPI version](https://badge.fury.io/py/mwsql.svg)](https://badge.fury.io/py/mwsql)
+[![Downloads](https://static.pepy.tech/badge/mwsql)](https://pepy.tech/project/mwsql)
+
 Overview
 ========
 
