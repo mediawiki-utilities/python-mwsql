@@ -1,3 +1,9 @@
+.. image:: https://badge.fury.io/py/mwsql.svg
+    :target: https://badge.fury.io/py/mwsql
+
+.. image:: https://static.pepy.tech/personalized-badge/mwsql?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads
+ :target: https://pepy.tech/project/mwsql
+
 Overview
 ========
 
