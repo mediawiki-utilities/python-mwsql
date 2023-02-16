@@ -3,13 +3,13 @@
 
 .. image:: https://static.pepy.tech/personalized-badge/mwsql?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads
  :target: https://pepy.tech/project/mwsql
- 
+
 .. image:: https://github.com/mediawiki-utilities/python-mwsql/actions/workflows/test.yml/badge.svg
    :target: https://github.com/mediawiki-utilities/python-mwsql/actions/workflows/test.yml
- 
+
 .. image:: https://readthedocs.org/projects/ansicolortags/badge/?version=latest
-   :target: http://ansicolortags.readthedocs.io/?badge=latest 
- 
+   :target: http://ansicolortags.readthedocs.io/?badge=latest
+
 
 Overview
 ========
