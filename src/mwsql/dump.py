@@ -95,7 +95,6 @@ class Dump:
 
     @encoding.setter
     def encoding(self, new_encoding: str) -> None:
-
         self._encoding = new_encoding
 
     @property
