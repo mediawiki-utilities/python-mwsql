@@ -88,13 +88,13 @@ Future versions of ``mwsql`` will improve the parser to correctly identify when 
 Project information
 -------------------
 
-``mwsql`` is released under the `MIT license`_.
+``mwsql`` is released under the `GPLv3`_.
 You can find the complete documentation at `Read the Docs`_. If you run into bugs, you can file them in our `issue tracker`_.
 Have ideas on how to make ``mwsql`` better?
 Contributions are most welcome – we have put together a guide on how to `get started`_.
 
 
-.. _`MIT license`: https://choosealicense.com/licenses/mit/
+.. _`GPLv3`: https://choosealicense.com/licenses/gpl-3.0/
 .. _`Read the Docs`: https://mwsql.readthedocs.io/en/latest/
 .. _`usage examples`: https://mwsql.readthedocs.io/en/latest/examples.html
 .. _`get started`: https://mwsql.readthedocs.io/en/latest/contributing.html
