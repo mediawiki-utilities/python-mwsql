@@ -1,9 +1,6 @@
 .. image:: https://badge.fury.io/py/mwsql.svg
     :target: https://badge.fury.io/py/mwsql
 
-.. image:: https://static.pepy.tech/personalized-badge/mwsql?period=total&units=international_system&left_color=black&right_color=blue&left_text=Downloads
- :target: https://pepy.tech/project/mwsql
-
 .. image:: https://github.com/mediawiki-utilities/python-mwsql/actions/workflows/test.yml/badge.svg
    :target: https://github.com/mediawiki-utilities/python-mwsql/actions/workflows/test.yml
 
@@ -15,7 +12,7 @@ Overview
 ========
 
 ``mwsql`` provides utilities for working with Wikimedia SQL dump files.
-It supports Python 3.7 and later versions.
+It supports Python 3.9 and later versions.
 
 ``mwsql`` abstracts the messiness of working with SQL dump files.
 Each Wikimedia SQL dump file contains one database table.
