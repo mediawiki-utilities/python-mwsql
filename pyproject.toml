@@ -1,9 +1,29 @@
-[build-system]
-requires = ["setuptools>=40.6.0",
-            "wheel"
-]
+[tool.poetry]
+name = "mwsql"
+version = "1.0.0"
+description = "mwsql is a set of utilities for processing\" MediaWiki SQL dump data"
+authors = ["Slavina Stefanova <slavina.stefanova@gmail.com>"]
+license = "GPLv3"
+readme = "README.rst"
 
-build-backend = "setuptools.build_meta"
+[tool.poetry.dependencies]
+python = "^3.9"
+requests = "^2.31.0"
+tqdm = "^4.66.1"
+
+[tool.poetry.group.dev.dependencies]
+Sphinx = "^7.2.6"
+sphinx-copybutton = "^0.5.2"
+sphinx-rtd-theme = "^2.0.0"
+sphinx-autobuild = "^2024.2.4"
+pytest = "^8.0.0"
+pre-commit = "^3.6.0"
+mypy = "^1.8.0"
+toml = "^0.10.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
 
 [tool.black]
 line-length = 88

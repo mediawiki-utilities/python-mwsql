@@ -9,25 +9,22 @@
 import sys
 from pathlib import Path
 
+import toml
+
 sys.path.insert(0, Path().resolve())
 
 
 # -- Project information -----------------------------------------------------
 
-project = "mwsql"
-copyright = "2021, Slavina Stefanova"
-author = "Slavina Stefanova"
-
-HERE = Path(__file__).parent.resolve()
-BASE_DIR = HERE.parent.resolve()
-SRC_DIR = BASE_DIR / "src"
-
-# Get package metadata
-about = {}
-with open(SRC_DIR / "mwsql" / "about.py") as fh:
-    exec(fh.read(), about)
-
-version = release = about["__version__"]
+# Read the project information from pyproject.toml
+pyproject = toml.load(Path(__file__).parent.parent / "pyproject.toml")
+project = pyproject["tool"]["poetry"]["name"]
+author = pyproject["tool"]["poetry"]["authors"][0].split(" <")[0]
+email = pyproject["tool"]["poetry"]["authors"][0].split(" <")[1].replace(">", "")
+version = release = pyproject["tool"]["poetry"]["version"]
+license = pyproject["tool"]["poetry"]["license"]
+summary = pyproject["tool"]["poetry"]["description"]
+copyright = f"Copyright 2021 {author}"
 
 
 # -- General configuration ---------------------------------------------------

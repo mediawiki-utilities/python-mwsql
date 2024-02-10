@@ -22,8 +22,7 @@ Basic Guidelines
 Local Dev Environment
 ---------------------
 
-To start, create a `virtual environment <https://virtualenv.pypa.io/>`_ and activate it.
-If you don't already have a preferred way of doing this, you can take a look at some commonly used tools: `pew <https://github.com/berdario/pew>`_, `virtualfish <https://virtualfish.readthedocs.io/>`_, and `virtualenvwrapper <https://virtualenvwrapper.readthedocs.io/>`_.
+To start, install `Poetry <https://python-poetry.org/docs/#installation>`_. Poetry will handle the creation of the virtual environment and the installation of the dependencies for you.
 
 Next, get an up to date checkout of the ``mwsql`` repository via ``SSH``:
 
@@ -37,20 +36,21 @@ or if you want to use git via ``https``:
 
     $ git clone https://github.com/blancadesal/mwsql.git
 
-Change into the newly created directory and install an editable version of ``mwsql``:
+Change into the newly created directory and install the dependencies using Poetry:
 
 .. code-block:: bash
 
     $ cd mwsql
-    $ pip install -e .
+    $ poetry install
 
-pip will install all the necessary dependencies for you, no need to install from a separate ``requirements.txt`` file.
+Poetry will install all the necessary dependencies for you, no need to install from a separate ``requirements.txt`` file.
 
 Dev dependencies
 ----------------
 
-The only dependency you *really* need to install is tox_. It will handle everyhing else for you,
-including running tests, formatting and linting through pre-commit, and building and serving the latest version of the documentation. Below are a few examples of how to run tox:
+The only dependency you *really* need to install is tox_.
+It will handle everything else for you, including running tests, formatting and linting through pre-commit, and building and serving the latest version of the documentation.
+Below are a few examples of how to run tox:
 
 .. code-block:: bash
 
