@@ -149,6 +149,7 @@ Docs
 .. _`Sphinx-style format`: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html#the-sphinx-docstring-format
 .. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/restructuredtext/basics.html
 .. _CI: https://github.com/blancadesal/mwsql/actions
+.. _pre-commit: https://pre-commit.com/
 .. _ruff: https://github.com/astral-sh/ruff-pre-commit
 .. _mypy: https://mypy.readthedocs.io/en/stable/
 .. _pytest: https://docs.pytest.org/en/6.2.x/
