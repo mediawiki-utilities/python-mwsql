@@ -71,7 +71,7 @@ Below are a few examples of how to run tox:
 Code style
 ----------
 
-- We use flake8_ to enforce `PEP 8`_ conventions, isort_ to sort our imports, and we use the black_ formatter with a line length of 88 characters.
+- We use ruff_ for linting and formatting Python code.
   Static typing is enforced using mypy_.
   Code that does not follow these conventions won't pass our CI.
   These tools are configured in either ``tox.ini`` or ``pyproject.toml``.
@@ -144,15 +144,11 @@ Docs
 - If you add a new feature, include one or more usage examples in ``examples.rst``.
 
 
-.. _`PEP 8`: https://www.python.org/dev/peps/pep-0008/backward-compatibility.html
 .. _tox: https://tox.readthedocs.io/
 .. _reStructuredText: https://www.sphinx-doc.org/en/stable/usage/
 .. _`Sphinx-style format`: https://sphinx-rtd-tutorial.readthedocs.io/en/latest/docstrings.html#the-sphinx-docstring-format
 .. _semantic newlines: https://rhodesmill.org/brandon/2012/one-sentence-per-line/restructuredtext/basics.html
 .. _CI: https://github.com/blancadesal/mwsql/actions
-.. _black: https://github.com/psf/black
-.. _pre-commit: https://pre-commit.com/
-.. _isort: https://github.com/PyCQA/isort
-.. _flake8: https://flake8.pycqa.org/en/latest/
+.. _ruff: https://github.com/astral-sh/ruff-pre-commit
 .. _mypy: https://mypy.readthedocs.io/en/stable/
 .. _pytest: https://docs.pytest.org/en/6.2.x/
