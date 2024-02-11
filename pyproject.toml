@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "mwsql"
-version = "1.0.0"
+version = "1.0.3"
 description = "mwsql is a set of utilities for processing MediaWiki SQL dump data"
 authors = ["Slavina Stefanova <slavina.stefanova@gmail.com>"]
 license = "GPL-3.0-or-later"
