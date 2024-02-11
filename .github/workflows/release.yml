@@ -1,7 +1,8 @@
 name: Publish Python 🐍 distributions 📦 to PyPI
 on:
-  release:
-    types: [created]
+  push:
+    tags:
+      - "v*.*.*"
 jobs:
   build:
     runs-on: ubuntu-latest
@@ -11,4 +12,5 @@ jobs:
         uses: JRubics/poetry-publish@v2.0
         with:
           python_version: "3.9.17"
+          poetry_install_options: "--without dev"
           pypi_token: ${{ secrets.PYPI_API_TOKEN }}
