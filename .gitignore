@@ -59,3 +59,4 @@ __pypackages__/
 .env
 
 .ruff_cache/
+.mypy_cache
