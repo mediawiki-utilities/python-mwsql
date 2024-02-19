@@ -4,7 +4,8 @@ from pathlib import Path, PosixPath
 import pytest
 import requests
 
-from mwsql.utils import _open_file, head, load
+from mwsql import head, load
+from mwsql.utils import _open_file
 
 from .helpers import Capturing
 

@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from mwsql.dump import Dump
+from mwsql import Dump
 
 from .helpers import Capturing
 
